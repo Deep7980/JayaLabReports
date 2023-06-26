@@ -1,0 +1,25 @@
+package com.jaya.app.labreports.core.common.constants
+
+enum class EntryType {
+    NONE,
+    LOADING,
+    VERSION_UPDATE,
+    BACKEND_ERROR,
+    NETWORK_ERROR,
+    CALL_NEXT_API,
+    NAVIGATE,
+    STAGE,
+    REGISTER,
+    CHANGE_SCREEN,
+    CHANGE_DOMAIN,
+    INFORM,
+    VERIFICATION,
+    VENDOR_CREDS,
+    DASHBOARD_DATA,
+    REMOVE_QUOTATION,
+    QUOTATIONS,
+    CREDS_ERROR,
+    NUMBER_ERROR,
+    QUOTATION_UPDATE,
+    ORDERS,
+}

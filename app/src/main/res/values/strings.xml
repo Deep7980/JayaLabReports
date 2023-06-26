@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Jaya Lab Reports</string>
+    <string name="loading">Loading..</string>
+    <string name="no_internet">No Internet.</string>
+    <string name="all_rights_reserved">All Rights Reserved by Jaya Industries Pvt Ltd</string>
+    <string name="welcome_to_jaya">Welcome to Jaya Industries</string>
+    <string name="login_here">Login Here</string>
+    <string name="verify_now">Verify Now</string>
+    <string name="resend_otp">Resend OTP</string>
+    <string name="otp_sending">OTP sending..</string>
+    <string name="get_otp_verification">Get OTP Verification</string>
+</resources>
