@@ -23,4 +23,10 @@ sealed class Destination(
 
     object Login: Destination(route = AppRoutes.LOGIN, id = UUID.randomUUID().toString())
 
+    object Dashboard: Destination(route = AppRoutes.DASHBOARD, id = UUID.randomUUID().toString())
+
+    object AvailableQuote: Destination(route = AppRoutes.AVAILABLE_QUOTE, id = UUID.randomUUID().toString())
+
+    object MyQuotes: Destination(route = AppRoutes.MY_QUOTES, id = UUID.randomUUID().toString())
+
 }

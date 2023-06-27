@@ -9,4 +9,10 @@
     <string name="resend_otp">Resend OTP</string>
     <string name="otp_sending">OTP sending..</string>
     <string name="get_otp_verification">Get OTP Verification</string>
+    <string name="available_quote">Available Quote</string>
+    <string name="logout">Logout</string>
+    <string name="app_name_new">Vendor</string>
+    <string name="lab_reports">Lab Reports</string>
+    <string name="filter">Filter</string>
+    <string name="received_on">Received on</string>
 </resources>

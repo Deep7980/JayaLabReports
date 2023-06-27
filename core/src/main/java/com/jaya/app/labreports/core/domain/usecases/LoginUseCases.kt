@@ -1,5 +1,6 @@
 package com.jaya.app.labreports.core.domain.usecases
 
+import android.util.Log
 import com.jaya.app.labreports.core.common.constants.DataEntry
 import com.jaya.app.labreports.core.common.constants.EntryType
 import com.jaya.app.labreports.core.common.enums.Page
@@ -20,11 +21,21 @@ class LoginUseCases @Inject constructor(
         emit(DataEntry(EntryType.LOADING, true))
         when (val response = repository.sendCode(mobileNumber)) {
             is Response.Success -> {
+                Log.d("Response SuccessMsg", "Success MSG: ${response.message}")
                 emit(DataEntry(EntryType.LOADING, false))
                 response.data?.apply {
                     when (status) {
                         true -> {
-                            emit(DataEntry(EntryType.VERIFICATION, isSent))
+                            emit(
+                                DataEntry(
+                                    EntryType.NAVIGATE,
+                                    Navigation(
+                                        destination = Page.DASHBOARD,
+                                        popDestination = Page.LOGIN,
+                                        popUpto = true
+                                    )
+                                )
+                            )
                             emit(DataEntry(EntryType.INFORM, message))
                         }
 
@@ -44,6 +55,7 @@ class LoginUseCases @Inject constructor(
             is Response.Success -> {
                 emit(DataEntry(EntryType.LOADING, false))
                 response.data?.apply {
+                    Log.d("responseData", "verifyCode: ${response.data.vendorCreds.companyName}")
                     when (status) {
                         true -> {
                             vendorCreds.apply {
@@ -70,6 +82,19 @@ class LoginUseCases @Inject constructor(
             is Response.Loading -> {}
             is Response.Error -> throw IllegalArgumentException(response.message)
         }
+    }
+
+    fun decideNavigation() = flow {
+        emit(
+            DataEntry(
+                EntryType.NAVIGATE,
+                Navigation(
+                    destination = Page.DASHBOARD,
+                    popDestination = Page.LOGIN,
+                    popUpto = true
+                )
+            )
+        )
     }
 
 

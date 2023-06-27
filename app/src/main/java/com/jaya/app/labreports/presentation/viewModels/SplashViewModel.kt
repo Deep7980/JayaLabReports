@@ -38,7 +38,7 @@ class SplashViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             splashAnimation()
-            Timer().schedule(5000){
+            Timer().schedule(2000){
                 navigateFurther()
             }
         }

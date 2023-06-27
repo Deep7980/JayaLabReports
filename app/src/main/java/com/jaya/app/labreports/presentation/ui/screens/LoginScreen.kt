@@ -98,7 +98,7 @@ fun LoginScreen(viewModel: LoginViewModel) {
                 UpperSection()
                 LowerSection(
                     onNumberChange = viewModel::onNumberChange,
-                    sendCode = viewModel::sendCodeToNumber,
+                    sendCode = viewModel::navigateFurther,
                     sendStatus = viewModel.sendStatus,
                     btnLoading = viewModel.sendLoading,
                     btnState = viewModel.getCodeBtnState,
@@ -107,7 +107,7 @@ fun LoginScreen(viewModel: LoginViewModel) {
                     code = viewModel.userCode,
                     onChangeCode = viewModel::onChangeCode,
                     verifyCode = viewModel::verifyCode,
-                    resendOtpClicked = viewModel::sendCodeToNumber,
+                    resendOtpClicked = viewModel::navigateFurther,
                     otpSending = viewModel.sendLoading,
                     codeBtnLoading = viewModel.codeVerifyLoading,
                     codeBtnState = viewModel.codeBtnState
@@ -115,7 +115,7 @@ fun LoginScreen(viewModel: LoginViewModel) {
 
             }
             R.string.all_rights_reserved.Text(
-                style = MaterialTheme.typography.body1.copy(
+                style = MaterialTheme.typography.body2.copy(
                     color = Color.LightGray,
                     textAlign = TextAlign.Center
                 ),

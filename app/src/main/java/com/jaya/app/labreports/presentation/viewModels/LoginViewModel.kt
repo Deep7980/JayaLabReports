@@ -105,9 +105,14 @@ class LoginViewModel @Inject constructor(
                         }
                     }
 
-                    EntryType.VERIFICATION -> {
-                        it.data?.castValueToRequiredTypes<Boolean>()?.apply {
-                            sendStatus.setValue(this)
+                    EntryType.NAVIGATE -> {
+                        it.data?.castValueToRequiredTypes<Navigation>()?.apply {
+                            navigator.navigateToRoute(
+                                destination = destination.toDestination(),
+                                popToRoute = popDestination.toDestination(),
+                                inclusive = popUpto,
+                                singleTop = singleTop
+                            )
                         }
                     }
 
@@ -164,5 +169,24 @@ class LoginViewModel @Inject constructor(
                     }
                 }
             }.launchIn(viewModelScope)
+    }
+
+    fun navigateFurther() {
+        useCases.decideNavigation().onEach {
+            when (it.type) {
+                EntryType.NAVIGATE -> {
+                    it.data?.castValueToRequiredTypes<Navigation>()?.apply {
+                        navigator.navigateToRoute(
+                            destination = destination.toDestination(),
+                            popToRoute = popDestination.toDestination(),
+                            inclusive = popUpto,
+                            singleTop = singleTop
+                        )
+                    }
+                }
+
+                else -> {}
+            }
+        }.launchIn(viewModelScope)
     }
 }
