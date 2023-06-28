@@ -36,15 +36,16 @@ class LoginRepositoryImpl @Inject constructor(
 //        }
 //    }
 
+    //https://api.npoint.io/352dcebdd1fa2ddf949c
     override suspend fun sendCode(mobileNumber: String): Response<SendCodeResponse> {
         return try {
             Response.Loading<SendCodeResponse>(state = true)
             val baseUrl = "https://api.npoint.io"
             val url = if (baseUrl != null) {
-                "$baseUrl/0dfb3f9001090cec4eee"
+                "$baseUrl/352dcebdd1fa2ddf949c"
 
             } else {
-                "/0dfb3f9001090cec4eee"
+                "/352dcebdd1fa2ddf949c"
             }
             Log.d("URL", "URL = : $url")
             val result = httpClient

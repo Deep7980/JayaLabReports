@@ -118,4 +118,8 @@ dependencies {
 
     // compose animation graphics
     implementation "androidx.compose.animation:animation-graphics"
+
+    // Paging Compose
+    implementation "com.google.accompanist:accompanist-pager:0.27.1"
+    implementation "com.google.accompanist:accompanist-pager-indicators:0.13.0"
 }

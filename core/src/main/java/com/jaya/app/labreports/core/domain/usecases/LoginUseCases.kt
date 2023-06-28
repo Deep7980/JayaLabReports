@@ -21,14 +21,12 @@ class LoginUseCases @Inject constructor(
         emit(DataEntry(EntryType.LOADING, true))
         when (val response = repository.sendCode(mobileNumber)) {
             is Response.Success -> {
-                Log.d("Response SuccessMsg", "Success MSG: ${response.message}")
                 emit(DataEntry(EntryType.LOADING, false))
                 response.data?.apply {
                     when (status) {
                         true -> {
                             emit(
-                                DataEntry(
-                                    EntryType.NAVIGATE,
+                                DataEntry(EntryType.NAVIGATE,
                                     Navigation(
                                         destination = Page.DASHBOARD,
                                         popDestination = Page.LOGIN,
@@ -55,7 +53,6 @@ class LoginUseCases @Inject constructor(
             is Response.Success -> {
                 emit(DataEntry(EntryType.LOADING, false))
                 response.data?.apply {
-                    Log.d("responseData", "verifyCode: ${response.data.vendorCreds.companyName}")
                     when (status) {
                         true -> {
                             vendorCreds.apply {

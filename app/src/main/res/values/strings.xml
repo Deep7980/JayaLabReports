@@ -15,4 +15,5 @@
     <string name="lab_reports">Lab Reports</string>
     <string name="filter">Filter</string>
     <string name="received_on">Received on</string>
+    <string name="update_lab_reports">Update Lab Reports</string>
 </resources>
