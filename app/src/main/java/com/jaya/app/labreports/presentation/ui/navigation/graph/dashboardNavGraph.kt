@@ -8,6 +8,7 @@ import com.jaya.app.labreports.presentation.ui.navigation.Graph
 import com.jaya.app.labreports.presentation.ui.screens.DashboardScreen
 import com.jaya.app.labreports.presentation.ui.screens.LoginScreen
 import com.jaya.app.labreports.presentation.ui.screens.MyQuotesScreen
+import com.jaya.app.labreports.presentation.ui.screens.UpdateScreen
 import com.jaya.app.labreports.utilities.parent_child_relationship.ParentViewModel
 
 fun NavGraphBuilder.dashboardNavGraph(
@@ -20,6 +21,11 @@ fun NavGraphBuilder.dashboardNavGraph(
     ) {
         //DashboardScreen.destination(navController, this)
         MyQuotesScreen.destination(
+            navController = navController,
+            graphBuilder = this,
+            parentViewModel = parentViewModel
+        )
+        UpdateScreen.destination(
             navController = navController,
             graphBuilder = this,
             parentViewModel = parentViewModel

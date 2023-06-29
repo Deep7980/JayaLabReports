@@ -5,6 +5,7 @@ enum class Page {
     LOGIN,
     DASHBOARD,
     NONE,
+    UPDATE,
     COMPLETED,
     MYQUOTE,
     AVAILABLE_QUOTES,

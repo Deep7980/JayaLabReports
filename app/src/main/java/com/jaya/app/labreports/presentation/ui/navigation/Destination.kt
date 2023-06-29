@@ -29,4 +29,6 @@ sealed class Destination(
 
     object MyQuotes: Destination(route = AppRoutes.MY_QUOTES, id = UUID.randomUUID().toString())
 
+    object Updates: Destination(route = AppRoutes.UPDATE, id = UUID.randomUUID().toString())
+
 }

@@ -141,7 +141,7 @@ private fun DashboardDrawerSection(
     drawerMenus: State<List<DrawerMenuItem>>,
     vendorDetails: State<VendorCredentials?>,
     onSelect: (Int, DrawerMenuItem) -> Unit,
-    closeDrawer: () -> Unit,
+    closeDrawer: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
 

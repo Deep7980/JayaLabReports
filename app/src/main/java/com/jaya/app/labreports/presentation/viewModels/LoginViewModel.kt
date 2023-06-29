@@ -93,83 +93,83 @@ class LoginViewModel @Inject constructor(
         sendStatus.setValue(false)
     }
 
-    fun sendCodeToNumber() {
-        useCases
-            .sendCode(mobileNumber.value)
-            .catch { emit(DataEntry(EntryType.LOADING, true)) }
-            .onEach {
-                when (it.type) {
-                    EntryType.LOADING -> {
-                        it.data?.castValueToRequiredTypes<Boolean>()?.apply {
-                            sendLoading = this
-                        }
-                    }
-
-                    EntryType.NAVIGATE -> {
-                        it.data?.castValueToRequiredTypes<Navigation>()?.apply {
-                            navigator.navigateToRoute(
-                                destination = destination.toDestination(),
-                                popToRoute = popDestination.toDestination(),
-                                inclusive = popUpto,
-                                singleTop = singleTop
-                            )
-                        }
-                    }
-
-                    EntryType.INFORM -> {
-                        it.data?.castValueToRequiredTypes<String>()?.apply {
-                            notifier.value = this
-                        }
-                    }
-
-                    else -> {
-                        it.handleErrors()?.apply {
-                            notifier.value = this
-                        }
-                    }
-                }
-            }.launchIn(viewModelScope)
-    }
-
-    fun verifyCode() {
-        useCases.verifyCode(
-            mobileNumber = mobileNumber.value,
-            code = userCode.value
-        )
-            .catch { emit(DataEntry(EntryType.LOADING, true)) }
-            .onEach {
-                when (it.type) {
-                    EntryType.LOADING -> {
-                        it.data?.castValueToRequiredTypes<Boolean>()?.apply {
-                            codeVerifyLoading = this
-                        }
-                    }
-
-                    EntryType.NAVIGATE -> {
-                        it.data?.castValueToRequiredTypes<Navigation>()?.apply {
-                            navigator.navigateToRoute(
-                                destination = destination.toDestination(),
-                                popToRoute = popDestination.toDestination(),
-                                inclusive = popUpto,
-                                singleTop = singleTop
-                            )
-                        }
-                    }
-
-                    EntryType.INFORM -> {
-                        it.data?.castValueToRequiredTypes<String>()?.apply {
-                            notifier.value = this
-                        }
-                    }
-
-                    else -> {
-                        it.handleErrors()?.apply {
-                            notifier.value = this
-                        }
-                    }
-                }
-            }.launchIn(viewModelScope)
-    }
+//    fun sendCodeToNumber() {
+//        useCases
+//            .sendCode(mobileNumber.value)
+//            .catch { emit(DataEntry(EntryType.LOADING, true)) }
+//            .onEach {
+//                when (it.type) {
+//                    EntryType.LOADING -> {
+//                        it.data?.castValueToRequiredTypes<Boolean>()?.apply {
+//                            sendLoading = this
+//                        }
+//                    }
+//
+//                    EntryType.NAVIGATE -> {
+//                        it.data?.castValueToRequiredTypes<Navigation>()?.apply {
+//                            navigator.navigateToRoute(
+//                                destination = destination.toDestination(),
+//                                popToRoute = popDestination.toDestination(),
+//                                inclusive = popUpto,
+//                                singleTop = singleTop
+//                            )
+//                        }
+//                    }
+//
+//                    EntryType.INFORM -> {
+//                        it.data?.castValueToRequiredTypes<String>()?.apply {
+//                            notifier.value = this
+//                        }
+//                    }
+//
+//                    else -> {
+//                        it.handleErrors()?.apply {
+//                            notifier.value = this
+//                        }
+//                    }
+//                }
+//            }.launchIn(viewModelScope)
+//    }
+//
+//    fun verifyCode() {
+//        useCases.verifyCode(
+//            mobileNumber = mobileNumber.value,
+//            code = userCode.value
+//        )
+//            .catch { emit(DataEntry(EntryType.LOADING, true)) }
+//            .onEach {
+//                when (it.type) {
+//                    EntryType.LOADING -> {
+//                        it.data?.castValueToRequiredTypes<Boolean>()?.apply {
+//                            codeVerifyLoading = this
+//                        }
+//                    }
+//
+//                    EntryType.NAVIGATE -> {
+//                        it.data?.castValueToRequiredTypes<Navigation>()?.apply {
+//                            navigator.navigateToRoute(
+//                                destination = destination.toDestination(),
+//                                popToRoute = popDestination.toDestination(),
+//                                inclusive = popUpto,
+//                                singleTop = singleTop
+//                            )
+//                        }
+//                    }
+//
+//                    EntryType.INFORM -> {
+//                        it.data?.castValueToRequiredTypes<String>()?.apply {
+//                            notifier.value = this
+//                        }
+//                    }
+//
+//                    else -> {
+//                        it.handleErrors()?.apply {
+//                            notifier.value = this
+//                        }
+//                    }
+//                }
+//            }.launchIn(viewModelScope)
+//    }
 
     fun navigateFurther() {
         useCases.decideNavigation().onEach {

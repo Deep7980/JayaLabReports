@@ -9,6 +9,7 @@ fun Page.toDestination(): Destination = when (this) {
 //    Page.NONE -> Destination.NONE
 //    Page.COMPLETED -> Destination.Completed
     Page.MYQUOTE -> Destination.MyQuotes
+    Page.UPDATE -> Destination.Updates
 //    Page.ORDERS -> Destination.Orders
 //    Page.AVAILABLE_QUOTES -> Destination.AvailableQuote
 
@@ -24,5 +25,6 @@ fun Destination.toPage(): Page = when (this) {
 //    Destination.Orders -> Page.ORDERS
     Destination.Splash -> Page.SPLASH
     Destination.MyQuotes -> Page.MYQUOTE
+    Destination.Updates -> Page.UPDATE
     else -> Page.NONE
 }

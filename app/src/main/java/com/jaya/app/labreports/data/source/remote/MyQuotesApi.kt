@@ -5,6 +5,7 @@ import com.jaya.app.labreports.core.model.labReportsDashboardResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 import retrofit2.http.Url
+import javax.inject.Inject
 
 interface MyQuotesApi {
 
@@ -15,8 +16,5 @@ interface MyQuotesApi {
 //    ): LabQuotationsResponse
 
     @GET
-    suspend fun myQuotes(
-        @Url url: String,
-//        @Query("status") variance: String
-    ): LabQuotationsResponse
+    suspend fun myQuotes(@Url url: String,): LabQuotationsResponse
 }

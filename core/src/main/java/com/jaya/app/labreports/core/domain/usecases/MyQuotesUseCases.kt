@@ -16,16 +16,45 @@ class MyQuotesUseCases @Inject constructor(
     private val appPreference: AppPreference
 ) {
 
-    fun myQuotes(selectedVariance: QuotationVariance) = flow {
+//    fun myQuotes(selectedVariance: QuotationVariance) = flow {
+//        emit(DataEntry(EntryType.LOADING, true))
+//        when (val response = repository.myQuotes()) {
+//            is Response.Success -> {
+//                emit(DataEntry(EntryType.LOADING, false))
+//                response.data?.apply {
+//                    Log.d("ResponseData", "myQuotes Data = : ${response.data.products}")
+//                    when (status) {
+//                        true -> {
+//                            emit(DataEntry(EntryType.QUOTATIONS, products))
+//                        }
+//
+//                        false -> {
+//                            emit(DataEntry(EntryType.BACKEND_ERROR, message))
+//                        }
+//                    }
+//                }
+//            }
+//
+//            is Response.Loading -> {}
+//            is Response.Error -> handleFailedResponse(response)
+//        }
+//
+//
+//    }
+
+    fun getAllProducts() = flow{
         emit(DataEntry(EntryType.LOADING, true))
-        when (val response = repository.myQuotes()) {
-            is Response.Success -> {
+        val response = repository.myQuotes()
+        emit(DataEntry(EntryType.LOADING, false))
+        when (response){
+            is Response.Success ->{
                 emit(DataEntry(EntryType.LOADING, false))
+                //Log.d("Products", "getAllProducts: ${response.data?.products}")
                 response.data?.apply {
-                    Log.d("ResponseData", "myQuotes Data = : ${response.data.products}")
                     when (status) {
                         true -> {
                             emit(DataEntry(EntryType.QUOTATIONS, products))
+                            Log.d("Products", "getAllProducts: $products")
                         }
 
                         false -> {
@@ -34,11 +63,9 @@ class MyQuotesUseCases @Inject constructor(
                     }
                 }
             }
-
             is Response.Loading -> {}
             is Response.Error -> handleFailedResponse(response)
+
         }
-
-
     }
 }

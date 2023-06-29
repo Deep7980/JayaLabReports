@@ -1,25 +1,31 @@
 package com.jaya.app.labreports.presentation.viewModels
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jaya.app.labreports.core.common.constants.EntryType
+import com.jaya.app.labreports.core.domain.entities.Products
 import com.jaya.app.labreports.core.domain.entities.VendorCredentials
 import com.jaya.app.labreports.core.domain.usecases.DashboardUseCases
+import com.jaya.app.labreports.core.model.MenuItems
 import com.jaya.app.labreports.core.model.Navigation
 import com.jaya.app.labreports.presentation.ui.navigation.Destination
 import com.jaya.app.labreports.presentation.ui.navigation.RouteNavigator
 import com.jaya.app.labreports.presentation.ui.navigation.toDestination
 import com.jaya.app.labreports.presentation.viewstates.DrawerMenuItem
 import com.jaya.app.labreports.presentation.viewstates.DrawerMenus
+import com.jaya.app.labreports.utilities.castListToRequiredTypes
 import com.jaya.app.labreports.utilities.castValueToRequiredTypes
 import com.jaya.app.labreports.utilities.parent_child_relationship.ChildRequest
 import com.jaya.app.labreports.utilities.parent_child_relationship.ParentViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -33,6 +39,9 @@ class DashBoardViewModel @Inject constructor(
     private val useCases: DashboardUseCases
 ): ParentViewModel(), RouteNavigator by navigator {
 
+    val first = mutableStateOf("")
+    val second = mutableStateOf("")
+
     override fun listenChildRequests(requests: StateFlow<ChildRequest<Any>?>) {
         viewModelScope.launch {
             requests.collectLatest {
@@ -41,6 +50,7 @@ class DashBoardViewModel @Inject constructor(
             }
         }
     }
+
 
     private val _vendorDetails = MutableStateFlow<VendorCredentials?>(null)
     val vendorDetails = _vendorDetails.asStateFlow()
@@ -111,4 +121,22 @@ class DashBoardViewModel @Inject constructor(
                 }
             }.launchIn(viewModelScope)
     }
+
+//    private fun getDrawerMenu(){
+//        useCases.getMenuList()
+//            .flowOn(Dispatchers.IO)
+//            .onEach {
+//                when(it.type){
+//                    EntryType.QUOTATIONS -> {
+//                        it.data?.castValueToRequiredTypes<MenuItems>()?.let {
+//                            first.value=it.first
+//                            second.value=it.second
+//                            Log.d("menulist", "menu items: ${first.value} ${second.value}")
+//                        }
+//                    }
+//
+//                    else -> {}
+//                }
+//            }
+//    }
 }

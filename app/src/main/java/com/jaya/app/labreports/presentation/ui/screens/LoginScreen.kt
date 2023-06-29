@@ -106,7 +106,7 @@ fun LoginScreen(viewModel: LoginViewModel) {
                     onEditNumber = viewModel::editNumber,
                     code = viewModel.userCode,
                     onChangeCode = viewModel::onChangeCode,
-                    verifyCode = viewModel::verifyCode,
+                    verifyCode = viewModel::navigateFurther,
                     resendOtpClicked = viewModel::navigateFurther,
                     otpSending = viewModel.sendLoading,
                     codeBtnLoading = viewModel.codeVerifyLoading,

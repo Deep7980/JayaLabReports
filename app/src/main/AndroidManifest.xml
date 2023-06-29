@@ -29,7 +29,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <meta-data android:name="static_base_url" android:value="jayabiscuit.v-xplore.com"/>
+<!--        <meta-data android:name="static_base_url" android:value="jayabiscuit.v-xplore.com"/>-->
+        <meta-data
+            android:name="static_base_url"
+            android:value="api.npoint.io" />
     </application>
 
 </manifest>

@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -60,9 +62,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.pager.HorizontalPager
 import com.jaya.app.labreports.presentation.ui.theme.PurpleGrey40
 import com.jaya.app.labreports.presentation.ui.theme.Secondary
+import com.jaya.app.labreports.utilities.ResponsiveText
 import com.jaya.app.labreports.utilities.Text
 import kotlinx.coroutines.launch
 
@@ -92,7 +96,6 @@ fun AvailableQuotesScreen(viewModel: MyQuotesViewModel) {
     }
 
     // on below line we are creating variable for pager state.
-    val pagerState = rememberPagerState(3)
 
     Scaffold(modifier = Modifier
         .fillMaxSize()
@@ -221,7 +224,12 @@ fun AvailableQuotesScreen(viewModel: MyQuotesViewModel) {
 //            }
 //            Tabs(pagerState = pagerState)
 //            TabsContent(pagerState = pagerState)
-            TabScreen()
+            TabScreen(viewModel)
+//            viewModel.ProductsList.collectAsState().value.forEach {
+//                if(it!=null){
+//                    Text(text = it.name)
+//                }
+//            }
         }
 
     }
@@ -230,7 +238,7 @@ fun AvailableQuotesScreen(viewModel: MyQuotesViewModel) {
 
 
 @Composable
-fun TabScreen() {
+fun TabScreen(viewModel:MyQuotesViewModel) {
     var tabIndex by remember { mutableStateOf(0) }
 
     val tabs = listOf("New Entry", "Report Submitted")
@@ -253,281 +261,219 @@ fun TabScreen() {
             }
         }
         when (tabIndex) {
-            0 -> NewEntryScreen()
-            1 -> ReportSubmittedScreen()
+            0 -> NewEntryScreen(viewModel)
+            1 -> ReportSubmittedScreen(viewModel)
         }
     }
 }
 
 @Composable
-fun NewEntryScreen() {
+fun NewEntryScreen(viewModel: MyQuotesViewModel) {
 
-//    Text(
-//        text = "About",
-//        textAlign = TextAlign.Center,
-//        fontSize = 20.sp,
-//        fontWeight = FontWeight.Bold
-//    )
+    if(!viewModel.quotationsLoading){
+        viewModel.ProductsList.collectAsState().value.forEach {
 
-    OutlinedCard(
-        modifier = Modifier
-            .fillMaxWidth(1f)
-            .padding(30.dp),
-        shape = RoundedCornerShape(5.dp),
-        colors = CardDefaults.outlinedCardColors(
-            containerColor = Color.White
-        ),
-        border = BorderStroke(1.dp, color = Color.LightGray),
-        elevation = CardDefaults.outlinedCardElevation(
-            defaultElevation = 10.dp
-        )
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.Top
-        ) {
-            Text(
-                text = "Maida",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(top = 20.dp, start = 20.dp)
-            )
-            Text(
-                text = "Received On : 15 Jan 2023",
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.padding(top = 10.dp, start = 20.dp, bottom = 20.dp)
-            )
-            Divider( thickness = 1.dp, color = Color.Black, modifier = Modifier.padding(bottom = 20.dp))
-            OutlinedCard(
-                modifier = Modifier
-                    .fillMaxWidth(1f)
-                    .height(70.dp)
-                    .padding(start = 20.dp, bottom = 20.dp, end = 20.dp),
-                shape = RoundedCornerShape(5.dp),
-                colors = CardDefaults.outlinedCardColors(
-                    containerColor = Color.LightGray
-                ),
-                border = BorderStroke(1.dp, color = Color.LightGray),
-                elevation = CardDefaults.outlinedCardElevation(
-                    defaultElevation = 10.dp
-                )
-            ) {
-                Row(
-                    modifier = Modifier
-                ) {
+            LazyColumn() {
+                itemsIndexed(viewModel.ProductsList.value.toList()) { index, item ->
 
-                    R.string.update_lab_reports.Text(
+                    OutlinedCard(
+                        modifier = Modifier
+                            .fillMaxWidth(1f)
+                            .padding(30.dp),
+                        shape = RoundedCornerShape(5.dp),
+                        colors = CardDefaults.outlinedCardColors(
+                            containerColor = Color.White
+                        ),
+                        border = BorderStroke(1.dp, color = Color.LightGray),
+                        elevation = CardDefaults.outlinedCardElevation(
+                            defaultElevation = 10.dp
+                        )
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 10.dp),
+                            horizontalArrangement = Arrangement.spacedBy(30.dp)
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.Start,
+                                verticalArrangement = Arrangement.Top
+                            ) {
+                                Text(
+                                    text = item.name,
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(top = 20.dp, start = 20.dp)
+                                )
+                                Text(
+                                    text = "Received On : ${item.receivedOn}",
+                                    fontWeight = FontWeight.Medium,
+                                    modifier = Modifier.padding(top = 10.dp, start = 20.dp)
+                                )
+                            }
+                            Image(
+                                painter = rememberAsyncImagePainter(item.image),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .width(120.dp)
+                                    .height(120.dp)
+                                    .padding(bottom = 30.dp)
+                            )
 
-                        style = TextStyle(Color.White, fontSize = 18.sp,fontWeight = FontWeight.Medium),
-                        modifier = Modifier.padding(start = 20.dp, top = 13.dp)
-                    )
+                        }
+                        Divider(
+                            thickness = 1.dp,
+                            color = Color.Black,
+                            modifier = Modifier.padding(bottom = 20.dp)
+                        )
+                        OutlinedCard(
+                            modifier = Modifier
+                                .fillMaxWidth(1f)
+                                .height(70.dp)
+                                .padding(start = 20.dp, bottom = 20.dp, end = 20.dp),
+                            shape = RoundedCornerShape(5.dp),
+                            colors = CardDefaults.outlinedCardColors(
+                                containerColor = Color.LightGray
+                            ),
+                            border = BorderStroke(1.dp, color = Color.LightGray),
+                            elevation = CardDefaults.outlinedCardElevation(
+                                defaultElevation = 10.dp
+                            )
+                        ) {
+                            Row(
+                                modifier = Modifier
+                            ) {
 
-                    Image(
-                        painter = painterResource(id = R.drawable.arrow),
-                        contentDescription = "",
-                        modifier = Modifier.width(90.dp).height(70.dp).padding(start = 60.dp)
+//                        R.string.update_lab_reports.Text(
+//
+//                            style = TextStyle(Color.White, fontSize = 18.sp,fontWeight = FontWeight.Medium),
+//                            modifier = Modifier.padding(start = 20.dp, top = 13.dp)
+//                        )
+//
+//                        Image(
+//                            painter = painterResource(id = R.drawable.arrow),
+//                            contentDescription = "",
+//                            modifier = Modifier
+//                                .width(90.dp)
+//                                .height(70.dp)
+//                                .padding(start = 60.dp)
+//
+//                        )
+                                AppButton(
+                                    text = R.string.update_lab_reports,
+                                    onBtnClicked = { viewModel.updateScreen(item.id) },
+                                    btnColor = Color.LightGray,
+                                    modifier = Modifier
+                                        .fillMaxWidth(1f)
+                                        .height(70.dp)
+                                )
 
-                    )
+                                Image(
+                                    painter = painterResource(id = R.drawable.arrow),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .width(90.dp)
+                                        .height(70.dp)
+
+                                )
+                            }
+                        }
+                    }
                 }
             }
-        }
-    }
-    OutlinedCard(
-        modifier = Modifier
-            .fillMaxWidth(1f)
-            .padding(30.dp),
-        shape = RoundedCornerShape(5.dp),
-        colors = CardDefaults.outlinedCardColors(
-            containerColor = Color.White
-        ),
-        border = BorderStroke(1.dp, color = Color.LightGray),
-        elevation = CardDefaults.outlinedCardElevation(
-            defaultElevation = 10.dp
-        )
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.Top
-        ) {
-            Text(
-                text = "Sugar",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(top = 20.dp, start = 20.dp)
-            )
-            Text(
-                text = "Received On : 15 Jan 2023",
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.padding(top = 10.dp, start = 20.dp, bottom = 20.dp)
-            )
-            Divider( thickness = 1.dp, color = Color.Black, modifier = Modifier.padding(bottom = 20.dp))
-            OutlinedCard(
-                modifier = Modifier
-                    .fillMaxWidth(1f)
-                    .height(70.dp)
-                    .padding(start = 20.dp, bottom = 20.dp, end = 20.dp),
-                shape = RoundedCornerShape(5.dp),
-                colors = CardDefaults.outlinedCardColors(
-                    containerColor = Color.LightGray
-                ),
-                border = BorderStroke(1.dp, color = Color.LightGray),
-                elevation = CardDefaults.outlinedCardElevation(
-                    defaultElevation = 10.dp
-                )
-            ) {
-                Row(
-                    modifier = Modifier
-                ) {
-                    R.string.update_lab_reports.Text(
 
-                        style = TextStyle(Color.White, fontSize = 18.sp,fontWeight = FontWeight.Medium),
-                        modifier = Modifier.padding(start = 20.dp, top = 13.dp)
-                    )
-
-                    Image(
-                        painter = painterResource(id = R.drawable.arrow),
-                        contentDescription = "",
-                        modifier = Modifier.width(90.dp).height(70.dp).padding(start = 60.dp)
-
-                    )
-                }
-            }
         }
     }
 
 }
 
 @Composable
-fun ReportSubmittedScreen() {
+fun ReportSubmittedScreen(viewModel: MyQuotesViewModel) {
+    viewModel.ProductsList.collectAsState().value.forEach {
 
-    OutlinedCard(
-        modifier = Modifier
-            .fillMaxWidth(1f)
-            .padding(30.dp),
-        shape = RoundedCornerShape(5.dp),
-        colors = CardDefaults.outlinedCardColors(
-            containerColor = Color.White
-        ),
-        border = BorderStroke(1.dp, color = Color.LightGray),
-        elevation = CardDefaults.outlinedCardElevation(
-            defaultElevation = 10.dp
-        )
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.Top
+        OutlinedCard(
+            modifier = Modifier
+                .fillMaxWidth(1f)
+                .padding(30.dp),
+            shape = RoundedCornerShape(5.dp),
+            colors = CardDefaults.outlinedCardColors(
+                containerColor = Color.White
+            ),
+            border = BorderStroke(1.dp, color = Color.LightGray),
+            elevation = CardDefaults.outlinedCardElevation(
+                defaultElevation = 10.dp
+            )
         ) {
-            Text(
-                text = "Maida",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(top = 20.dp, start = 20.dp)
-            )
-            Text(
-                text = "Received On : 15 Jan 2023",
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.padding(top = 10.dp, start = 20.dp, bottom = 20.dp)
-            )
-            Divider( thickness = 1.dp, color = Color.Black, modifier = Modifier.padding(bottom = 20.dp))
-            OutlinedCard(
+            Row(
                 modifier = Modifier
-                    .fillMaxWidth(1f)
-                    .height(70.dp)
-                    .padding(start = 20.dp, bottom = 20.dp, end = 20.dp),
-                shape = RoundedCornerShape(5.dp),
-                colors = CardDefaults.outlinedCardColors(
-                    containerColor = Color.Green
-                ),
-                border = BorderStroke(1.dp, color = Color.LightGray),
-                elevation = CardDefaults.outlinedCardElevation(
-                    defaultElevation = 10.dp
-                )
+                    .fillMaxWidth()
+                    .padding(top = 10.dp),
+                horizontalArrangement = Arrangement.spacedBy(30.dp)
             ) {
-                Row(
-                    modifier = Modifier
+
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.Top
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.baseline_check_circle_24),
-                        contentDescription = "",
-                        modifier = Modifier.width(50.dp).height(50.dp).padding(start = 20.dp)
-
+                    Text(
+                        text = it.name,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(top = 20.dp, start = 20.dp)
                     )
-
-                    R.string.update_lab_reports.Text(
-
-                        style = TextStyle(Color.White, fontSize = 18.sp,fontWeight = FontWeight.Medium),
-                        modifier = Modifier.padding(start = 20.dp, top = 13.dp)
+                    Text(
+                        text = "Received On : ${it.receivedOn}",
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.padding(top = 10.dp, start = 20.dp, bottom = 20.dp)
                     )
+                }
+                Image(
+                    painter = rememberAsyncImagePainter(it.image),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .width(120.dp)
+                        .height(120.dp)
+                        .padding(bottom = 30.dp)
+                )
+            }
+                Divider( thickness = 1.dp, color = Color.Black, modifier = Modifier.padding(bottom = 20.dp))
+                OutlinedCard(
+                    modifier = Modifier
+                        .fillMaxWidth(1f)
+                        .height(70.dp)
+                        .padding(start = 20.dp, bottom = 20.dp, end = 20.dp),
+                    shape = RoundedCornerShape(5.dp),
+                    colors = CardDefaults.outlinedCardColors(
+                        containerColor = Color.Green
+                    ),
+                    border = BorderStroke(1.dp, color = Color.LightGray),
+                    elevation = CardDefaults.outlinedCardElevation(
+                        defaultElevation = 10.dp
+                    )
+                ) {
+                    Row(
+                        modifier = Modifier
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.baseline_check_circle_24),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .width(50.dp)
+                                .height(50.dp)
+                                .padding(start = 20.dp)
+
+                        )
+
+                        R.string.update_lab_reports.Text(
+
+                            style = TextStyle(Color.White, fontSize = 18.sp,fontWeight = FontWeight.Medium),
+                            modifier = Modifier.padding(start = 20.dp, top = 13.dp)
+                        )
+                    }
                 }
             }
         }
-    }
-    OutlinedCard(
-        modifier = Modifier
-            .fillMaxWidth(1f)
-            .padding(30.dp),
-        shape = RoundedCornerShape(5.dp),
-        colors = CardDefaults.outlinedCardColors(
-            containerColor = Color.White
-        ),
-        border = BorderStroke(1.dp, color = Color.LightGray),
-        elevation = CardDefaults.outlinedCardElevation(
-            defaultElevation = 10.dp
-        )
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.Top
-        ) {
-            Text(
-                text = "Sugar",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(top = 20.dp, start = 20.dp)
-            )
-            Text(
-                text = "Received On : 15 Jan 2023",
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.padding(top = 10.dp, start = 20.dp, bottom = 20.dp)
-            )
-            Divider( thickness = 1.dp, color = Color.Black, modifier = Modifier.padding(bottom = 20.dp))
-            OutlinedCard(
-                modifier = Modifier
-                    .fillMaxWidth(1f)
-                    .height(70.dp)
-                    .padding(start = 20.dp, bottom = 20.dp, end = 20.dp),
-                shape = RoundedCornerShape(5.dp),
-                colors = CardDefaults.outlinedCardColors(
-                    containerColor = Color.Green
-                ),
-                border = BorderStroke(1.dp, color = Color.LightGray),
-                elevation = CardDefaults.outlinedCardElevation(
-                    defaultElevation = 10.dp
-                )
-            ) {
-                Row(
-                    modifier = Modifier
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.baseline_check_circle_24),
-                        contentDescription = "",
-                        modifier = Modifier.width(50.dp).height(50.dp).padding(start = 20.dp)
 
-                    )
-
-                    R.string.update_lab_reports.Text(
-
-                        style = TextStyle(Color.White, fontSize = 18.sp,fontWeight = FontWeight.Medium),
-                        modifier = Modifier.padding(start = 20.dp, top = 13.dp)
-                    )
-                }
-            }
-        }
-    }
 }
 
 

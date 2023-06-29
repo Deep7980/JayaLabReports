@@ -28,6 +28,55 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
+
+
+    private val Context.dataStore by preferencesDataStore("jayaPackaging")
+
+
+//    private fun <T> provideApi(klass: Class<T>): T {
+//        val okHttpClient = OkHttpClient.Builder().addInterceptor(
+//            ChuckerInterceptor.Builder(JayaLabReports.INSTANCE!!.applicationContext)
+//                .collector(ChuckerCollector(JayaLabReports.INSTANCE!!.applicationContext))
+//                .maxContentLength(250000L)
+//                .redactHeaders(emptySet())
+//                .alwaysReadResponseBody(false)
+//                .build()
+//        ).build()
+//
+//        return Retrofit.Builder()
+//            .baseUrl(Metar[Constants.BASE_URL])
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .client(okHttpClient)
+//            .build()
+//            .create(klass)
+//    }
+
+////////-----------------------------------------------------------------------------------------------------
+
+//        private fun <T> provideApi2(klass: Class<T>): T {
+//            val okHttpClient = OkHttpClient.Builder().addInterceptor(
+//                ChuckerInterceptor.Builder(JayaPackagingApp.app!!.applicationContext)
+//                    .collector(ChuckerCollector(JayaPackagingApp.app!!.applicationContext))
+//                    .maxContentLength(250000L)
+//                    .redactHeaders(emptySet())
+//                    .alwaysReadResponseBody(false)
+//                    .build()
+//            ).build()
+//
+//            return Retrofit.Builder()
+//                .baseUrl("https://api.npoint.io/")
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .client(okHttpClient)
+//                .build()
+//                .create(klass)
+//        }
+
+
+//    @Singleton
+//    @Provides
+//    fun provideMyApiList(): MyApiList = provideApi(MyApiList::class.java)
+
+
     @Provides
     @Singleton
     fun provideGlobalCoroutineScope(): CoroutineScope =
@@ -68,4 +117,10 @@ object AppModule {
             .client(okHttpClient)
             .build()
     }
+
+//    @Singleton
+//    @Provides
+//    fun provideMyApiList(): MyQuotesApi = provideHttpClient(MyQuotesApi::class.java)
+
+
 }

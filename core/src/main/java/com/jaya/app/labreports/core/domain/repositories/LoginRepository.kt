@@ -6,7 +6,7 @@ import com.jaya.app.labreports.core.model.VerifyCodeResponse
 
 interface LoginRepository {
 
-    suspend fun sendCode(mobileNumber: String): Response<SendCodeResponse>
-
-    suspend fun verifyCode(mobileNumber: String, code: String): Response<VerifyCodeResponse>
+//    suspend fun sendCode(mobileNumber: String): Response<SendCodeResponse>
+//
+//    suspend fun verifyCode(mobileNumber: String, code: String): Response<VerifyCodeResponse>
 }

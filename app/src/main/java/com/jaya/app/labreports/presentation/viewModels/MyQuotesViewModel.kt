@@ -1,14 +1,19 @@
 package com.jaya.app.labreports.presentation.viewModels
 
 import android.util.Log
+import android.widget.Toast
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jaya.app.labreports.core.common.constants.EntryType
 import com.jaya.app.labreports.core.common.enums.QuotationVariance
+import com.jaya.app.labreports.core.common.enums.UiData
+import com.jaya.app.labreports.core.domain.entities.ItemIdToUpdate
 import com.jaya.app.labreports.core.domain.entities.Products
 import com.jaya.app.labreports.core.domain.usecases.MyQuotesUseCases
 import com.jaya.app.labreports.core.model.Navigation
@@ -16,6 +21,7 @@ import com.jaya.app.labreports.presentation.ui.navigation.Destination
 import com.jaya.app.labreports.presentation.ui.navigation.RouteNavigator
 import com.jaya.app.labreports.presentation.ui.navigation.toDestination
 import com.jaya.app.labreports.presentation.viewstates.QuoteVarianceItem
+import com.jaya.app.labreports.presentation.viewstates.SavableMutableState
 import com.jaya.app.labreports.presentation.viewstates.VendorQuotationItem
 import com.jaya.app.labreports.utilities.castListToRequiredTypes
 import com.jaya.app.labreports.utilities.castValueToRequiredTypes
@@ -40,6 +46,26 @@ class MyQuotesViewModel @Inject constructor(
     private val navigator: RouteNavigator,
     private val useCases: MyQuotesUseCases
 ): ChildViewModel(), RouteNavigator by navigator {
+
+    //val dataLoading = SavableMutableState(UiData.StateApiLoading,savedStateHandle,false)
+    private val _productsList = MutableStateFlow(emptyList<Products>())
+    val ProductsList = _productsList.asStateFlow()
+    var status = mutableStateOf("")
+
+
+    init {
+        getAllProductsList()
+    }
+
+
+    fun updateScreen(id:String){
+        ItemIdToUpdate.IdToUpdate=id
+        navigator.popAndNavigate(
+            destination = Destination.Updates,
+            singleTop = false,
+            inclusive = false
+        )
+    }
 
     override fun listenParentOrders(orders: StateFlow<ParentOrder<Any>?>) {
         orders
@@ -89,32 +115,69 @@ class MyQuotesViewModel @Inject constructor(
     var notifier = mutableStateOf("")
 
 
-    fun quotations(variance: QuotationVariance) {
-        useCases.myQuotes(variance).flowOn(Dispatchers.IO).onEach {
-            when (it.type) {
-                EntryType.QUOTATIONS -> it.data?.castListToRequiredTypes<Products>()
-                    ?.let { quotes ->
-                        selectedVariance = variance
-                        _quotations.update {
-                            quotes.map { item ->
-                                VendorQuotationItem(
-                                    item = mutableStateOf(item)
-                                )
+//    fun quotations(variance: QuotationVariance) {
+//        useCases.myQuotes(variance).flowOn(Dispatchers.IO).onEach {
+//            when (it.type) {
+//                EntryType.QUOTATIONS -> it.data?.castListToRequiredTypes<Products>()
+//                    ?.let { quotes ->
+//                        selectedVariance = variance
+//                        _quotations.update {
+//                            quotes.map { item ->
+//                                VendorQuotationItem(
+//                                    item = mutableStateOf(item)
+//                                )
+//                            }
+//                        }
+//                    }
+//
+//                EntryType.LOADING -> it.data?.castValueToRequiredTypes<Boolean>()?.let {
+//                    quotationsLoading = it
+//                }
+//
+//                else -> {
+//                    it.handleErrors()?.let {
+//                        notifier.value = it
+//                    }
+//                }
+//            }
+//        }.launchIn(viewModelScope)
+//    }
+
+    fun getAllProductsList(){
+        useCases.getAllProducts()
+            .flowOn(Dispatchers.IO)
+            .onEach {
+                when(it.type){
+                    EntryType.QUOTATIONS -> {
+                        it.data?.castListToRequiredTypes<Products>()?.let { products->
+                            _productsList.update { products }
+                            Log.d("ProductsList", "getAllProductsList: ${products}")
+                            Log.d("ProdUIList", "ProdUIList: ${ProductsList.value}")
+                        }
+                    }
+                    EntryType.NETWORK_ERROR -> {
+                        it.data?.apply {
+                            castValueToRequiredTypes<String>()?.let {
+
+                            }
+                        }
+                    }
+                    EntryType.LOADING -> {
+                        it.data?.apply {
+                            castValueToRequiredTypes<Boolean>()?.let {
+
                             }
                         }
                     }
 
-                EntryType.LOADING -> it.data?.castValueToRequiredTypes<Boolean>()?.let {
-                    quotationsLoading = it
-                }
-
-                else -> {
-                    it.handleErrors()?.let {
-                        notifier.value = it
+                    EntryType.LOADING -> it.data?.castValueToRequiredTypes<Boolean>()?.let {
+                        quotationsLoading = it
                     }
+
+                    else -> {}
                 }
-            }
-        }.launchIn(viewModelScope)
+            }.launchIn(viewModelScope)
+
     }
 
     fun onVarianceClicked(varianceItem: QuoteVarianceItem) {

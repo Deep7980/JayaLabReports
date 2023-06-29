@@ -8,3 +8,6 @@ data class Products(
     val receivedOn: String,
     val image: String
 )
+object ItemIdToUpdate{
+    var IdToUpdate:String=""
+}

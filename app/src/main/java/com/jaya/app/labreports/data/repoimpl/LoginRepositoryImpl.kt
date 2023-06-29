@@ -12,7 +12,6 @@ import retrofit2.Retrofit
 import javax.inject.Inject
 
 class LoginRepositoryImpl @Inject constructor(
-    private val httpClient: Retrofit,
     private val preference: AppPreference
 
 ):LoginRepository{
@@ -37,27 +36,27 @@ class LoginRepositoryImpl @Inject constructor(
 //    }
 
     //https://api.npoint.io/352dcebdd1fa2ddf949c
-    override suspend fun sendCode(mobileNumber: String): Response<SendCodeResponse> {
-        return try {
-            Response.Loading<SendCodeResponse>(state = true)
-            val baseUrl = "https://api.npoint.io"
-            val url = if (baseUrl != null) {
-                "$baseUrl/352dcebdd1fa2ddf949c"
-
-            } else {
-                "/352dcebdd1fa2ddf949c"
-            }
-            Log.d("URL", "URL = : $url")
-            val result = httpClient
-                .create(SendCodeApi::class.java)
-                .sendCode(url, mobileNumber)
-            Response.Success(result)
-        } catch (ex: Exception) {
-            Response.Error(message = ex.message)
-        } finally {
-            Response.Loading<SendCodeResponse>(state = false)
-        }
-    }
+//    override suspend fun sendCode(mobileNumber: String): Response<SendCodeResponse> {
+//        return try {
+//            Response.Loading<SendCodeResponse>(state = true)
+//            val baseUrl = "https://api.npoint.io"
+//            val url = if (baseUrl != null) {
+//                "$baseUrl/352dcebdd1fa2ddf949c"
+//
+//            } else {
+//                "/352dcebdd1fa2ddf949c"
+//            }
+//            Log.d("URL", "URL = : $url")
+//            val result = httpClient
+//                .create(SendCodeApi::class.java)
+//                .sendCode(url, mobileNumber)
+//            Response.Success(result)
+//        } catch (ex: Exception) {
+//            Response.Error(message = ex.message)
+//        } finally {
+//            Response.Loading<SendCodeResponse>(state = false)
+//        }
+//    }
 
 //    override suspend fun verifyCode(
 //        mobileNumber: String,
@@ -82,26 +81,26 @@ class LoginRepositoryImpl @Inject constructor(
 //        }
 //    }
 
-    override suspend fun verifyCode(
-        mobileNumber: String,
-        code: String
-    ): Response<VerifyCodeResponse> {
-        return try {
-            Response.Loading<VerifyCodeResponse>(state = true)
-            val baseUrl = "https://api.npoint.io"
-            val url = if (baseUrl != null) {
-                "$baseUrl/0dfb3f9001090cec4eee"
-            } else {
-                "/0dfb3f9001090cec4eee"
-            }
-            val result = httpClient
-                .create(VerifyCodeApi::class.java)
-                .verify(url, mobileNumber, code)
-            Response.Success(result)
-        } catch (ex: Exception) {
-            Response.Error(message = ex.message)
-        } finally {
-            Response.Loading<VerifyCodeResponse>(state = false)
-        }
-    }
+//    override suspend fun verifyCode(
+//        mobileNumber: String,
+//        code: String
+//    ): Response<VerifyCodeResponse> {
+//        return try {
+//            Response.Loading<VerifyCodeResponse>(state = true)
+//            val baseUrl = "https://api.npoint.io"
+//            val url = if (baseUrl != null) {
+//                "$baseUrl/0dfb3f9001090cec4eee"
+//            } else {
+//                "/0dfb3f9001090cec4eee"
+//            }
+//            val result = httpClient
+//                .create(VerifyCodeApi::class.java)
+//                .verify(url, mobileNumber, code)
+//            Response.Success(result)
+//        } catch (ex: Exception) {
+//            Response.Error(message = ex.message)
+//        } finally {
+//            Response.Loading<VerifyCodeResponse>(state = false)
+//        }
+//    }
 }
