@@ -1,14 +1,18 @@
 package com.jaya.app.labreports.presentation.viewModels
 
+import android.app.Application
 import android.util.Log
+import android.widget.Toast
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jaya.app.labreports.app.JayaLabReports
 import com.jaya.app.labreports.core.common.constants.EntryType
 import com.jaya.app.labreports.core.domain.entities.Products
 import com.jaya.app.labreports.core.domain.entities.VendorCredentials
 import com.jaya.app.labreports.core.domain.usecases.DashboardUseCases
-import com.jaya.app.labreports.core.model.MenuItems
 import com.jaya.app.labreports.core.model.Navigation
 import com.jaya.app.labreports.presentation.ui.navigation.Destination
 import com.jaya.app.labreports.presentation.ui.navigation.RouteNavigator
@@ -31,6 +35,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.jaya.app.labreports.utilities.shortToast
 
 
 @HiltViewModel
@@ -46,7 +51,17 @@ class DashBoardViewModel @Inject constructor(
         viewModelScope.launch {
             requests.collectLatest {
                 Log.d("TESTING", "listenChildRequests: $it")
+                if(it?.data is Destination){
+                    it.data.castValueToRequiredTypes<Destination>()?.let {
+                        navigator.navigateToRoute(
+                            destination = Destination.Updates,
+                            popToRoute = Destination.Dashboard,
+                            singleTop = true,
+                            inclusive = true
 
+                        )
+                    }
+                }
             }
         }
     }
@@ -74,12 +89,13 @@ class DashBoardViewModel @Inject constructor(
     private fun navigateToMenu(menu: DrawerMenus) {
         when (menu) {
             DrawerMenus.AvailableQuotes -> {
-                navigator.navigateToRoute(
-                    destination = menu.mDestination,
-                    popToRoute = Destination.NONE,
-                    inclusive = false,
-                    singleTop = false
-                )
+                Toast.makeText(JayaLabReports.INSTANCE?.applicationContext,"NO Available Quotes page.",Toast.LENGTH_SHORT).show()
+//                navigator.navigateToRoute(
+//                    destination = menu.mDestination,
+//                    popToRoute = Destination.NONE,
+//                    inclusive = false,
+//                    singleTop = false
+//                )
             }
 
             DrawerMenus.Logout -> {

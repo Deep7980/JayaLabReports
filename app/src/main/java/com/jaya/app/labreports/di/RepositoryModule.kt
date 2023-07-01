@@ -4,10 +4,12 @@ import com.jaya.app.labreports.core.domain.repositories.DashboardRepository
 import com.jaya.app.labreports.core.domain.repositories.LoginRepository
 import com.jaya.app.labreports.core.domain.repositories.MyQuotesRepository
 import com.jaya.app.labreports.core.domain.repositories.SplashRepository
+import com.jaya.app.labreports.core.domain.repositories.UpdateRepository
 import com.jaya.app.labreports.data.repoimpl.DashboardRepositoryImpl
 import com.jaya.app.labreports.data.repoimpl.LoginRepositoryImpl
 import com.jaya.app.labreports.data.repoimpl.MyQuotesRepositoryImpl
 import com.jaya.app.labreports.data.repoimpl.SplashRepositoryImpl
+import com.jaya.app.labreports.data.repoimpl.UpdateRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -28,4 +30,7 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindMyQuotesRepository(impl: MyQuotesRepositoryImpl): MyQuotesRepository
+
+    @Binds
+    abstract fun bindUpdateRepository(impl: UpdateRepositoryImpl): UpdateRepository
 }

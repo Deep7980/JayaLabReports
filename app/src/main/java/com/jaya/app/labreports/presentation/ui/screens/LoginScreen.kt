@@ -98,12 +98,11 @@ fun LoginScreen(viewModel: LoginViewModel) {
                 UpperSection()
                 LowerSection(
                     onNumberChange = viewModel::onNumberChange,
-                    sendCode = viewModel::navigateFurther,
+                    sendCode = viewModel::sendCodeToNumber,
                     sendStatus = viewModel.sendStatus,
                     btnLoading = viewModel.sendLoading,
                     btnState = viewModel.getCodeBtnState,
                     mobileNumber = viewModel.mobileNumber,
-                    onEditNumber = viewModel::editNumber,
                     code = viewModel.userCode,
                     onChangeCode = viewModel::onChangeCode,
                     verifyCode = viewModel::navigateFurther,
@@ -163,7 +162,6 @@ private fun ColumnScope.LowerSection(
     btnLoading: Boolean,
     btnState: SavableMutableState<Boolean>,
     mobileNumber: SavableMutableState<String>,
-    onEditNumber: () -> Unit,
     code: SavableMutableState<String>,
     onChangeCode: (String) -> Unit,
     verifyCode: () -> Unit,
@@ -206,14 +204,7 @@ private fun ColumnScope.LowerSection(
                         mobileNumber.value.Text(
                             style = MaterialTheme.typography.h5.copy(color = Color.LightGray)
                         )
-                        Icon(
-                            Icons.Default.Edit,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(35.dp)
-                                .clickable(onClick = onEditNumber),
-                            tint = Color.LightGray
-                        )
+
                     }
                 }
                 Spacer(modifier = Modifier.height(20.dp))

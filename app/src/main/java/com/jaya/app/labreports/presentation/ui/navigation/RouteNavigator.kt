@@ -12,6 +12,12 @@ interface RouteNavigator {
         inclusive: Boolean,
         singleTop: Boolean,
     )
+    fun tryNavigateTo(
+        route: String,
+        popUpToRoute: String? = null,
+        inclusive: Boolean = false,
+        isSingleTop: Boolean = false,
+    )
     fun popAndNavigate(destination: Destination, singleTop: Boolean, inclusive: Boolean)
 
     fun listenNavArgument(listener: NavArgumentListener)

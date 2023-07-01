@@ -16,4 +16,6 @@
     <string name="filter">Filter</string>
     <string name="received_on">Received on</string>
     <string name="update_lab_reports">Update Lab Reports</string>
+    <string name="submit_report">Submit Report</string>
+    <string name="parameters">Parameters</string>
 </resources>

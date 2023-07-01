@@ -17,35 +17,36 @@ class LoginUseCases @Inject constructor(
     private val preference: AppPreference
 ) {
 
-//    fun sendCode(mobileNumber: String) = flow {
-//        emit(DataEntry(EntryType.LOADING, true))
-//        when (val response = repository.sendCode(mobileNumber)) {
-//            is Response.Success -> {
-//                emit(DataEntry(EntryType.LOADING, false))
-//                response.data?.apply {
-//                    when (status) {
-//                        true -> {
-//                            emit(
-//                                DataEntry(EntryType.NAVIGATE,
-//                                    Navigation(
-//                                        destination = Page.DASHBOARD,
-//                                        popDestination = Page.LOGIN,
-//                                        popUpto = true
-//                                    )
-//                                )
-//                            )
-//                            emit(DataEntry(EntryType.INFORM, message))
-//                        }
-//
-//                        false -> handleFailedResponse(response)
-//                    }
-//                }
-//            }
-//
-//            is Response.Loading -> {}
-//            is Response.Error -> throw IllegalArgumentException(response.message)
-//        }
-//    }
+    fun sendCode(mobileNumber: String) = flow {
+        emit(DataEntry(EntryType.LOADING, true))
+        when (val response = repository.sendCode(mobileNumber)) {
+            is Response.Success -> {
+                emit(DataEntry(EntryType.LOADING, false))
+                Log.d("CodeSendedToMobile", "sendCode: ${response.message}")
+                response.data?.apply {
+                    when (status) {
+                        true -> {
+                            emit(
+                                DataEntry(EntryType.NAVIGATE,
+                                    Navigation(
+                                        destination = Page.DASHBOARD,
+                                        popDestination = Page.LOGIN,
+                                        popUpto = true
+                                    )
+                                )
+                            )
+                            emit(DataEntry(EntryType.INFORM, message))
+                        }
+
+                        false -> handleFailedResponse(response)
+                    }
+                }
+            }
+
+            is Response.Loading -> {}
+            is Response.Error -> throw IllegalArgumentException(response.message)
+        }
+    }
 //
 //    fun verifyCode(mobileNumber: String, code: String) = flow {
 //        emit(DataEntry(EntryType.LOADING, true))

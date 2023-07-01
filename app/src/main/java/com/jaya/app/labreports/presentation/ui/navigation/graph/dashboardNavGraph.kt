@@ -25,11 +25,11 @@ fun NavGraphBuilder.dashboardNavGraph(
             graphBuilder = this,
             parentViewModel = parentViewModel
         )
-        UpdateScreen.destination(
-            navController = navController,
-            graphBuilder = this,
-            parentViewModel = parentViewModel
-        )
+//        UpdateScreen.destination(
+//            navController = navController,
+//            graphBuilder = this,
+//            parentViewModel = parentViewModel
+//        )
 //        OrdersScreen.destination(
 //            navController = navController,
 //            graphBuilder = this,

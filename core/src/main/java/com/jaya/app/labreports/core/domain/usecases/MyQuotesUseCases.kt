@@ -45,7 +45,7 @@ class MyQuotesUseCases @Inject constructor(
     fun getAllProducts() = flow{
         emit(DataEntry(EntryType.LOADING, true))
         val response = repository.myQuotes()
-        emit(DataEntry(EntryType.LOADING, false))
+        //emit(DataEntry(EntryType.LOADING, false))
         when (response){
             is Response.Success ->{
                 emit(DataEntry(EntryType.LOADING, false))

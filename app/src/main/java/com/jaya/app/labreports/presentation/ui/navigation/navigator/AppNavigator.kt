@@ -32,6 +32,15 @@ class AppNavigator : RouteNavigator {
         )
     )
 
+    override fun tryNavigateTo(
+        route: String,
+        popUpToRoute: String?,
+        inclusive: Boolean,
+        isSingleTop: Boolean
+    ) {
+
+    }
+
     override fun popAndNavigate(
         destination: Destination,
         singleTop: Boolean,
@@ -61,5 +70,6 @@ class AppNavigator : RouteNavigator {
     private fun navigateBack(state: NavigationState) {
         navigationState.tryEmit(state)
     }
+
 
 }

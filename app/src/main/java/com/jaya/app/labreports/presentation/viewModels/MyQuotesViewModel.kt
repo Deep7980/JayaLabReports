@@ -23,9 +23,11 @@ import com.jaya.app.labreports.presentation.ui.navigation.toDestination
 import com.jaya.app.labreports.presentation.viewstates.QuoteVarianceItem
 import com.jaya.app.labreports.presentation.viewstates.SavableMutableState
 import com.jaya.app.labreports.presentation.viewstates.VendorQuotationItem
+import com.jaya.app.labreports.utilities.AppConnectivity
 import com.jaya.app.labreports.utilities.castListToRequiredTypes
 import com.jaya.app.labreports.utilities.castValueToRequiredTypes
 import com.jaya.app.labreports.utilities.handleErrors
+import com.jaya.app.labreports.utilities.parent_child_relationship.ChildRequest
 import com.jaya.app.labreports.utilities.parent_child_relationship.ChildViewModel
 import com.jaya.app.labreports.utilities.parent_child_relationship.ParentOrder
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,18 +40,22 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import java.util.Timer
 import javax.inject.Inject
+import kotlin.concurrent.schedule
 
 
 @HiltViewModel
 class MyQuotesViewModel @Inject constructor(
     private val navigator: RouteNavigator,
+    private val connectivity: AppConnectivity,
     private val useCases: MyQuotesUseCases
 ): ChildViewModel(), RouteNavigator by navigator {
 
     //val dataLoading = SavableMutableState(UiData.StateApiLoading,savedStateHandle,false)
     private val _productsList = MutableStateFlow(emptyList<Products>())
     val ProductsList = _productsList.asStateFlow()
+    val connectivityStatus = connectivity.connectivityStatusFlow
     var status = mutableStateOf("")
 
 
@@ -60,11 +66,19 @@ class MyQuotesViewModel @Inject constructor(
 
     fun updateScreen(id:String){
         ItemIdToUpdate.IdToUpdate=id
-        navigator.popAndNavigate(
-            destination = Destination.Updates,
-            singleTop = false,
-            inclusive = false
-        )
+        Log.d("SpecificItemID", "Specific Item ID: $id")
+//        navigator.popAndNavigate(
+//            destination = Destination.Updates,
+//            singleTop = false,
+//            inclusive = false
+//        )
+        sentRequestToParent(ChildRequest(Destination.Updates))
+//        navigator.navigateToRoute(
+//            destination = Destination.Updates,
+//            popToRoute = Destination.MyQuotes,
+//            singleTop = false,
+//            inclusive = false
+//        )
     }
 
     override fun listenParentOrders(orders: StateFlow<ParentOrder<Any>?>) {
@@ -165,13 +179,9 @@ class MyQuotesViewModel @Inject constructor(
                     EntryType.LOADING -> {
                         it.data?.apply {
                             castValueToRequiredTypes<Boolean>()?.let {
-
+                                quotationsLoading = it
                             }
                         }
-                    }
-
-                    EntryType.LOADING -> it.data?.castValueToRequiredTypes<Boolean>()?.let {
-                        quotationsLoading = it
                     }
 
                     else -> {}

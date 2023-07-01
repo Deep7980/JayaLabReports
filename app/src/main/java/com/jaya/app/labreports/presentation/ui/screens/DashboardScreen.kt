@@ -1,5 +1,6 @@
 package com.jaya.app.labreports.presentation.ui.screens
 
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
@@ -38,6 +39,7 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +48,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.Navigation
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.jaya.app.labreports.R
@@ -114,7 +120,7 @@ fun DashboardScreen(viewModel: DashBoardViewModel) {
                 .fillMaxSize()
                 .statusBarColor(color = Primary),
             contentWindowInsets = ScaffoldDefaults.contentWindowInsets,
-            topBar = { TopBarSection(dashboardDrawerState, uiScope) },
+            topBar = {TopBarSection(dashboardDrawerState, uiScope)},
 
             ) {
             Column(
@@ -131,6 +137,12 @@ fun DashboardScreen(viewModel: DashBoardViewModel) {
 
     EffectHandlers(viewModel = viewModel)
 
+}
+
+@Composable
+fun currentRoute(navController: NavHostController): String? {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    return navBackStackEntry?.destination?.route
 }
 
 

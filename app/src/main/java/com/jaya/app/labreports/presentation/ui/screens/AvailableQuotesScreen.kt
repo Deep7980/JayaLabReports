@@ -12,13 +12,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
@@ -62,6 +67,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.navigation.Navigation
 import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.pager.HorizontalPager
 import com.jaya.app.labreports.presentation.ui.theme.PurpleGrey40
@@ -225,6 +231,28 @@ fun AvailableQuotesScreen(viewModel: MyQuotesViewModel) {
 //            Tabs(pagerState = pagerState)
 //            TabsContent(pagerState = pagerState)
             TabScreen(viewModel)
+
+            if(viewModel.quotationsLoading){
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(150.dp)
+                ) {
+                    CircularProgressIndicator(
+                        color = Color.Black,
+                        strokeWidth = 1.dp,
+                        modifier = Modifier
+                            .size(48.dp)
+//                            .padding(top = 100.dp, start = 40.dp)
+
+                    )
+                    R.string.loading.Text(
+                        style = androidx.compose.material.MaterialTheme.typography.body1,
+//                        modifier = Modifier.padding(start = 100.dp, end = 50.dp,top=100.dp)
+
+                    )
+                }
+            }
 //            viewModel.ProductsList.collectAsState().value.forEach {
 //                if(it!=null){
 //                    Text(text = it.name)
@@ -240,6 +268,7 @@ fun AvailableQuotesScreen(viewModel: MyQuotesViewModel) {
 @Composable
 fun TabScreen(viewModel:MyQuotesViewModel) {
     var tabIndex by remember { mutableStateOf(0) }
+
 
     val tabs = listOf("New Entry", "Report Submitted")
 
@@ -269,6 +298,7 @@ fun TabScreen(viewModel:MyQuotesViewModel) {
 
 @Composable
 fun NewEntryScreen(viewModel: MyQuotesViewModel) {
+
 
     if(!viewModel.quotationsLoading){
         viewModel.ProductsList.collectAsState().value.forEach {
@@ -389,62 +419,19 @@ fun NewEntryScreen(viewModel: MyQuotesViewModel) {
 
 @Composable
 fun ReportSubmittedScreen(viewModel: MyQuotesViewModel) {
+
     viewModel.ProductsList.collectAsState().value.forEach {
 
-        OutlinedCard(
-            modifier = Modifier
-                .fillMaxWidth(1f)
-                .padding(30.dp),
-            shape = RoundedCornerShape(5.dp),
-            colors = CardDefaults.outlinedCardColors(
-                containerColor = Color.White
-            ),
-            border = BorderStroke(1.dp, color = Color.LightGray),
-            elevation = CardDefaults.outlinedCardElevation(
-                defaultElevation = 10.dp
-            )
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp),
-                horizontalArrangement = Arrangement.spacedBy(30.dp)
-            ) {
+        LazyColumn() {
+            itemsIndexed(viewModel.ProductsList.value.toList()) { index, item ->
 
-                Column(
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.Top
-                ) {
-                    Text(
-                        text = it.name,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(top = 20.dp, start = 20.dp)
-                    )
-                    Text(
-                        text = "Received On : ${it.receivedOn}",
-                        fontWeight = FontWeight.Medium,
-                        modifier = Modifier.padding(top = 10.dp, start = 20.dp, bottom = 20.dp)
-                    )
-                }
-                Image(
-                    painter = rememberAsyncImagePainter(it.image),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .width(120.dp)
-                        .height(120.dp)
-                        .padding(bottom = 30.dp)
-                )
-            }
-                Divider( thickness = 1.dp, color = Color.Black, modifier = Modifier.padding(bottom = 20.dp))
                 OutlinedCard(
                     modifier = Modifier
                         .fillMaxWidth(1f)
-                        .height(70.dp)
-                        .padding(start = 20.dp, bottom = 20.dp, end = 20.dp),
+                        .padding(30.dp),
                     shape = RoundedCornerShape(5.dp),
                     colors = CardDefaults.outlinedCardColors(
-                        containerColor = Color.Green
+                        containerColor = Color.White
                     ),
                     border = BorderStroke(1.dp, color = Color.LightGray),
                     elevation = CardDefaults.outlinedCardElevation(
@@ -453,26 +440,87 @@ fun ReportSubmittedScreen(viewModel: MyQuotesViewModel) {
                 ) {
                     Row(
                         modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp),
+                        horizontalArrangement = Arrangement.spacedBy(30.dp)
                     ) {
+
+                        Column(
+                            horizontalAlignment = Alignment.Start,
+                            verticalArrangement = Arrangement.Top
+                        ) {
+                            Text(
+                                text = item.name,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(top = 20.dp, start = 20.dp)
+                            )
+                            Text(
+                                text = "Received On : ${item.receivedOn}",
+                                fontWeight = FontWeight.Medium,
+                                modifier = Modifier.padding(
+                                    top = 10.dp,
+                                    start = 20.dp,
+                                    bottom = 20.dp
+                                )
+                            )
+                        }
                         Image(
-                            painter = painterResource(id = R.drawable.baseline_check_circle_24),
+                            painter = rememberAsyncImagePainter(it.image),
                             contentDescription = "",
                             modifier = Modifier
-                                .width(50.dp)
-                                .height(50.dp)
-                                .padding(start = 20.dp)
-
+                                .width(120.dp)
+                                .height(120.dp)
+                                .padding(bottom = 30.dp)
                         )
-
-                        R.string.update_lab_reports.Text(
-
-                            style = TextStyle(Color.White, fontSize = 18.sp,fontWeight = FontWeight.Medium),
-                            modifier = Modifier.padding(start = 20.dp, top = 13.dp)
+                    }
+                    Divider(
+                        thickness = 1.dp,
+                        color = Color.Black,
+                        modifier = Modifier.padding(bottom = 20.dp)
+                    )
+                    OutlinedCard(
+                        modifier = Modifier
+                            .fillMaxWidth(1f)
+                            .height(70.dp)
+                            .padding(start = 20.dp, bottom = 20.dp, end = 20.dp),
+                        shape = RoundedCornerShape(5.dp),
+                        colors = CardDefaults.outlinedCardColors(
+                            containerColor = Color.Green
+                        ),
+                        border = BorderStroke(1.dp, color = Color.LightGray),
+                        elevation = CardDefaults.outlinedCardElevation(
+                            defaultElevation = 10.dp
                         )
+                    ) {
+                        Row(
+                            modifier = Modifier
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.baseline_check_circle_24),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .width(50.dp)
+                                    .height(50.dp)
+                                    .padding(start = 20.dp)
+
+                            )
+
+                            R.string.update_lab_reports.Text(
+
+                                style = TextStyle(
+                                    Color.White,
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Medium
+                                ),
+                                modifier = Modifier.padding(start = 20.dp, top = 13.dp)
+                            )
+                        }
                     }
                 }
             }
         }
+    }
 
 }
 
