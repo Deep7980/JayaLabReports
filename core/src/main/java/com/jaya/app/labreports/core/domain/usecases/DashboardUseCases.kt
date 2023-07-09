@@ -30,11 +30,29 @@ class DashboardUseCases @Inject constructor(
             )
     }
     fun userDetails() = flow {
-        val creds = preference.credentials()
-        if(creds != null) {
-            emit(DataEntry(EntryType.VENDOR_CREDS, creds))
-        } else {
-            emit(DataEntry(EntryType.CREDS_ERROR, null))
+//        val creds = preference.credentials()
+//        if(creds != null) {
+//            emit(DataEntry(EntryType.VENDOR_CREDS, creds))
+//        } else {
+//            emit(DataEntry(EntryType.CREDS_ERROR, null))
+//        }
+        emit(DataEntry(EntryType.LOADING,true))
+        when(val response = repository.getVendorCredentials()){
+            is Response.Success->{
+                emit(DataEntry(EntryType.LOADING,false))
+                response.data?.apply {
+                    when(status){
+                        true->{
+                            emit(DataEntry(EntryType.VENDOR_CREDS,vendorCredentials))
+                        }
+                        false->{
+                            emit(DataEntry(EntryType.NETWORK_ERROR,message))
+                        }
+                    }
+                }
+            }
+            is Response.Error -> throw IllegalArgumentException(response.message)
+            else -> {}
         }
     }
 

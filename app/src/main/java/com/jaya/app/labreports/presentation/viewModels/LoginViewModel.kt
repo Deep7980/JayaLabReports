@@ -12,11 +12,13 @@ import com.jaya.app.labreports.app.JayaLabReports
 import com.jaya.app.labreports.core.common.constants.DataEntry
 import com.jaya.app.labreports.core.common.constants.EntryType
 import com.jaya.app.labreports.core.common.enums.UiData
+import com.jaya.app.labreports.core.common.sealed.DialogData
 import com.jaya.app.labreports.core.domain.usecases.LoginUseCases
 import com.jaya.app.labreports.core.model.Navigation
 import com.jaya.app.labreports.presentation.ui.navigation.RouteNavigator
 import com.jaya.app.labreports.presentation.ui.navigation.toDestination
 import com.jaya.app.labreports.presentation.viewstates.SavableMutableState
+import com.jaya.app.labreports.utilities.MyDialog
 import com.jaya.app.labreports.utilities.castValueToRequiredTypes
 import com.jaya.app.labreports.utilities.handleErrors
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,6 +33,28 @@ class LoginViewModel @Inject constructor(
     private val useCases: LoginUseCases,
     savedStateHandle: SavedStateHandle
 ):ViewModel(), RouteNavigator by navigator {
+
+    val dashboardBack = mutableStateOf<MyDialog?>(null)
+
+    fun onBackDialog(){
+        dashboardBack.value = MyDialog(
+            data = DialogData(
+                title = "Jaya Lab Reports",
+                message = "Are you sure you want to exit ?",
+                positive = "Yes",
+                negative = "No",
+            )
+        )
+        handleDialogEvents()
+    }
+    private fun handleDialogEvents() {
+        dashboardBack.value?.onConfirm = {
+
+        }
+        dashboardBack.value?.onDismiss = {
+            dashboardBack.value?.setState(MyDialog.Companion.State.DISABLE)
+        }
+    }
 
     val mobileNumber = SavableMutableState(
         key = UiData.MobileNumber,

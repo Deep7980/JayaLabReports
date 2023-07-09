@@ -13,6 +13,7 @@ import androidx.lifecycle.viewModelScope
 import com.jaya.app.labreports.core.common.constants.EntryType
 import com.jaya.app.labreports.core.common.enums.QuotationVariance
 import com.jaya.app.labreports.core.common.enums.UiData
+import com.jaya.app.labreports.core.common.sealed.DialogData
 import com.jaya.app.labreports.core.domain.entities.ItemIdToUpdate
 import com.jaya.app.labreports.core.domain.entities.Products
 import com.jaya.app.labreports.core.domain.usecases.MyQuotesUseCases
@@ -24,6 +25,7 @@ import com.jaya.app.labreports.presentation.viewstates.QuoteVarianceItem
 import com.jaya.app.labreports.presentation.viewstates.SavableMutableState
 import com.jaya.app.labreports.presentation.viewstates.VendorQuotationItem
 import com.jaya.app.labreports.utilities.AppConnectivity
+import com.jaya.app.labreports.utilities.MyDialog
 import com.jaya.app.labreports.utilities.castListToRequiredTypes
 import com.jaya.app.labreports.utilities.castValueToRequiredTypes
 import com.jaya.app.labreports.utilities.handleErrors
@@ -32,6 +34,7 @@ import com.jaya.app.labreports.utilities.parent_child_relationship.ChildViewMode
 import com.jaya.app.labreports.utilities.parent_child_relationship.ParentOrder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -40,6 +43,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.util.Timer
 import javax.inject.Inject
 import kotlin.concurrent.schedule
@@ -57,10 +61,35 @@ class MyQuotesViewModel @Inject constructor(
     val ProductsList = _productsList.asStateFlow()
     val connectivityStatus = connectivity.connectivityStatusFlow
     var status = mutableStateOf("")
+    val dashboardBack = mutableStateOf<MyDialog?>(null)
 
 
     init {
         getAllProductsList()
+        viewModelScope.launch {
+            delay(2000L)
+            quotationsLoading=false
+        }
+    }
+
+    fun onBackDialog(){
+        dashboardBack.value = MyDialog(
+            data = DialogData(
+                title = "Jaya Lab Reports",
+                message = "Are you sure you want to exit ?",
+                positive = "Yes",
+                negative = "No",
+            )
+        )
+        handleDialogEvents()
+    }
+    private fun handleDialogEvents() {
+        dashboardBack.value?.onConfirm = {
+
+        }
+        dashboardBack.value?.onDismiss = {
+            dashboardBack.value?.setState(MyDialog.Companion.State.DISABLE)
+        }
     }
 
 

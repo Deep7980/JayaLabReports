@@ -1,11 +1,20 @@
 package com.jaya.app.labreports.presentation.ui.screens
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.with
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +25,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
@@ -30,6 +40,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
@@ -72,6 +83,9 @@ import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.pager.HorizontalPager
 import com.jaya.app.labreports.presentation.ui.theme.PurpleGrey40
 import com.jaya.app.labreports.presentation.ui.theme.Secondary
+import com.jaya.app.labreports.presentation.ui.theme.Surface
+import com.jaya.app.labreports.utilities.BackPressHandler
+import com.jaya.app.labreports.utilities.Image
 import com.jaya.app.labreports.utilities.ResponsiveText
 import com.jaya.app.labreports.utilities.Text
 import kotlinx.coroutines.launch
@@ -92,7 +106,7 @@ object MyQuotesScreen : AppRoute<MyQuotesViewModel> {
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPagerApi::class,
-    ExperimentalFoundationApi::class
+    ExperimentalFoundationApi::class, ExperimentalAnimationApi::class
 )
 @Composable
 fun AvailableQuotesScreen(viewModel: MyQuotesViewModel) {
@@ -100,6 +114,8 @@ fun AvailableQuotesScreen(viewModel: MyQuotesViewModel) {
     val snackbarHostState = remember {
         SnackbarHostState()
     }
+
+    BackPressHandler(onBackPressed = {viewModel.onBackDialog()})
 
     // on below line we are creating variable for pager state.
 
@@ -134,130 +150,32 @@ fun AvailableQuotesScreen(viewModel: MyQuotesViewModel) {
                     textColor = Color.Black
                 )
             }
-//            Row(
-//                modifier = Modifier.fillMaxWidth(),
-//                horizontalArrangement = Arrangement.SpaceBetween,
-//                verticalAlignment = Alignment.CenterVertically
-//            ) {
-//
-//                viewModel.quoteVariances.collectAsState().value.let { items ->
-//                    items.forEach { item ->
-//                        TextButton(
-//                            onClick = { viewModel.onVarianceClicked(item) },
-//                            modifier = Modifier
-//                                .width(screenWidth / items.size)
-//                                .height(65.dp),
-//                            shape = RectangleShape,
-//                            colors = ButtonDefaults.textButtonColors(
-//                                containerColor = if (item.selected) Color.Yellow.copy(alpha = .5f) else Color.White
-//                            )
-//                        ) {
-//                            item.variance.uiName.ResponsiveText(
-//                                style = MaterialTheme.typography.caption.copy(
-//                                    fontWeight = if (item.selected) FontWeight.Bold else FontWeight.Normal
-//                                )
-//                            )
-//                        }
-//                    }
-//                }
-//            }
-//            Divider()
 
-//            AnimatedContent(targetState = viewModel.quotationsLoading,
-//                modifier = Modifier.fillMaxSize(),
-//                contentAlignment = Alignment.Center,
-//                transitionSpec = {
-//                    (fadeIn(animationSpec = tween(700)) + slideInHorizontally(animationSpec = tween(
-//                        500
-//                    ), initialOffsetX = { it })).togetherWith(
-//                        fadeOut(
-//                            animationSpec = tween(700)
-//                        ) + slideOutHorizontally(
-//                            animationSpec = tween(500),
-//                            targetOffsetX = { -it })
-//                    )
-//                }) { targetState ->
-//                when (targetState) {
-//                    true -> Column(
-//                        modifier = Modifier.fillMaxSize(),
-//                        horizontalAlignment = Alignment.CenterHorizontally,
-//                        verticalArrangement = Arrangement.Center
-//                    ) {
-//                        Box(
-//                            modifier = Modifier.size(150.dp), contentAlignment = Alignment.Center
-//                        ) {
-//                            Surface(modifier = Modifier.fillMaxSize(),
-//                                shape = CircleShape,
-//                                color = com.jaya.app.labreports.presentation.ui.theme.Surface,
-//                                content = {})
-//                            CircularProgressIndicator(
-//                                color = Secondary, modifier = Modifier.fillMaxSize()
-//                            )
-//                            R.drawable.logo.Image(modifier = Modifier.size(100.dp))
-//                        }
-//                    }
-//
-//                    false -> viewModel.quotations.collectAsState().value?.let {
-//                        LazyColumn(
-//                            modifier = Modifier
-//                                .fillMaxWidth(fraction = .90f)
-//                                .fillMaxHeight(),
-//                            contentPadding = PaddingValues(vertical = 15.dp),
-//                            verticalArrangement = Arrangement.Top,
-//                            horizontalAlignment = Alignment.CenterHorizontally,
-//                        ) {
-//                            itemsIndexed(
-//                                items = it,
-//                                key = { idx, item -> (item.hashCode() + idx) },
-//                            ) { idx: Int, item: VendorQuotationItem ->
-//                                VendorQuotationItemView(quotationItem = item,
-//                                    selectedVariance = viewModel.selectedVariance,
-//                                    )
-//                                if (it.last() != item) {
-//                                    Spacer(modifier = Modifier.height(15.dp))
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//            Row(
-//                modifier = Modifier.fillMaxWidth(),
-//                horizontalArrangement = Arrangement.SpaceBetween,
-//                verticalAlignment = Alignment.CenterVertically
-//            ) {
-//
-//            }
-//            Tabs(pagerState = pagerState)
-//            TabsContent(pagerState = pagerState)
             TabScreen(viewModel)
+
+
+
 
             if(viewModel.quotationsLoading){
                 Column(
-                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(150.dp)
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    CircularProgressIndicator(
-                        color = Color.Black,
-                        strokeWidth = 1.dp,
-                        modifier = Modifier
-                            .size(48.dp)
-//                            .padding(top = 100.dp, start = 40.dp)
-
-                    )
-                    R.string.loading.Text(
-                        style = androidx.compose.material.MaterialTheme.typography.body1,
-//                        modifier = Modifier.padding(start = 100.dp, end = 50.dp,top=100.dp)
-
-                    )
+                    Box(
+                        modifier = Modifier.size(150.dp), contentAlignment = Alignment.Center
+                    ) {
+                        Surface(modifier = Modifier.fillMaxSize(),
+                            shape = CircleShape,
+                            color = Surface,
+                            content = {})
+                        androidx.compose.material3.CircularProgressIndicator(
+                            color = Secondary, modifier = Modifier.fillMaxSize()
+                        )
+                        R.drawable.logo.Image(modifier = Modifier.size(100.dp))
+                    }
                 }
             }
-//            viewModel.ProductsList.collectAsState().value.forEach {
-//                if(it!=null){
-//                    Text(text = it.name)
-//                }
-//            }
         }
 
     }
@@ -265,6 +183,7 @@ fun AvailableQuotesScreen(viewModel: MyQuotesViewModel) {
 }
 
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun TabScreen(viewModel:MyQuotesViewModel) {
     var tabIndex by remember { mutableStateOf(0) }
@@ -360,10 +279,11 @@ fun NewEntryScreen(viewModel: MyQuotesViewModel) {
                             modifier = Modifier
                                 .fillMaxWidth(1f)
                                 .height(70.dp)
-                                .padding(start = 20.dp, bottom = 20.dp, end = 20.dp),
+                                .padding(start = 20.dp, bottom = 20.dp, end = 20.dp)
+                                .clickable { viewModel.updateScreen(item.id) },
                             shape = RoundedCornerShape(5.dp),
                             colors = CardDefaults.outlinedCardColors(
-                                containerColor = Color.LightGray
+                                containerColor = Color.DarkGray
                             ),
                             border = BorderStroke(1.dp, color = Color.LightGray),
                             elevation = CardDefaults.outlinedCardElevation(
@@ -373,37 +293,29 @@ fun NewEntryScreen(viewModel: MyQuotesViewModel) {
                             Row(
                                 modifier = Modifier
                             ) {
+//                                AppButton(
+//                                    text = R.string.update_lab_reports,
+//                                    onBtnClicked = { viewModel.updateScreen(item.id) },
+//                                    btnColor = Color.DarkGray,
+//                                    modifier = Modifier
+//                                        .fillMaxWidth(0.80f)
+//                                        .height(70.dp)
+//                                )
+                                R.string.update_lab_reports.Text(style = TextStyle(
+                                    color = Color.White,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Medium,
 
-//                        R.string.update_lab_reports.Text(
-//
-//                            style = TextStyle(Color.White, fontSize = 18.sp,fontWeight = FontWeight.Medium),
-//                            modifier = Modifier.padding(start = 20.dp, top = 13.dp)
-//                        )
-//
-//                        Image(
-//                            painter = painterResource(id = R.drawable.arrow),
-//                            contentDescription = "",
-//                            modifier = Modifier
-//                                .width(90.dp)
-//                                .height(70.dp)
-//                                .padding(start = 60.dp)
-//
-//                        )
-                                AppButton(
-                                    text = R.string.update_lab_reports,
-                                    onBtnClicked = { viewModel.updateScreen(item.id) },
-                                    btnColor = Color.LightGray,
-                                    modifier = Modifier
-                                        .fillMaxWidth(1f)
-                                        .height(70.dp)
+                                ),
+                                    modifier = Modifier.padding(bottom = 13.dp, end = 13.dp,top=13.dp, start = 18.dp)
                                 )
 
                                 Image(
                                     painter = painterResource(id = R.drawable.arrow),
                                     contentDescription = "",
                                     modifier = Modifier
-                                        .width(90.dp)
-                                        .height(70.dp)
+                                        .fillMaxSize(0.85f)
+                                        .padding(top=10.dp, start = 70.dp)
 
                                 )
                             }
@@ -420,73 +332,19 @@ fun NewEntryScreen(viewModel: MyQuotesViewModel) {
 @Composable
 fun ReportSubmittedScreen(viewModel: MyQuotesViewModel) {
 
-    viewModel.ProductsList.collectAsState().value.forEach {
+    if(!viewModel.quotationsLoading){
+        viewModel.ProductsList.collectAsState().value.forEach {
 
-        LazyColumn() {
-            itemsIndexed(viewModel.ProductsList.value.toList()) { index, item ->
+            LazyColumn() {
+                itemsIndexed(viewModel.ProductsList.value.toList()) { index, item ->
 
-                OutlinedCard(
-                    modifier = Modifier
-                        .fillMaxWidth(1f)
-                        .padding(30.dp),
-                    shape = RoundedCornerShape(5.dp),
-                    colors = CardDefaults.outlinedCardColors(
-                        containerColor = Color.White
-                    ),
-                    border = BorderStroke(1.dp, color = Color.LightGray),
-                    elevation = CardDefaults.outlinedCardElevation(
-                        defaultElevation = 10.dp
-                    )
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 10.dp),
-                        horizontalArrangement = Arrangement.spacedBy(30.dp)
-                    ) {
-
-                        Column(
-                            horizontalAlignment = Alignment.Start,
-                            verticalArrangement = Arrangement.Top
-                        ) {
-                            Text(
-                                text = item.name,
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(top = 20.dp, start = 20.dp)
-                            )
-                            Text(
-                                text = "Received On : ${item.receivedOn}",
-                                fontWeight = FontWeight.Medium,
-                                modifier = Modifier.padding(
-                                    top = 10.dp,
-                                    start = 20.dp,
-                                    bottom = 20.dp
-                                )
-                            )
-                        }
-                        Image(
-                            painter = rememberAsyncImagePainter(it.image),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .width(120.dp)
-                                .height(120.dp)
-                                .padding(bottom = 30.dp)
-                        )
-                    }
-                    Divider(
-                        thickness = 1.dp,
-                        color = Color.Black,
-                        modifier = Modifier.padding(bottom = 20.dp)
-                    )
                     OutlinedCard(
                         modifier = Modifier
                             .fillMaxWidth(1f)
-                            .height(70.dp)
-                            .padding(start = 20.dp, bottom = 20.dp, end = 20.dp),
+                            .padding(30.dp),
                         shape = RoundedCornerShape(5.dp),
                         colors = CardDefaults.outlinedCardColors(
-                            containerColor = Color.Green
+                            containerColor = Color.White
                         ),
                         border = BorderStroke(1.dp, color = Color.LightGray),
                         elevation = CardDefaults.outlinedCardElevation(
@@ -495,26 +353,82 @@ fun ReportSubmittedScreen(viewModel: MyQuotesViewModel) {
                     ) {
                         Row(
                             modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 10.dp),
+                            horizontalArrangement = Arrangement.spacedBy(30.dp)
                         ) {
+
+                            Column(
+                                horizontalAlignment = Alignment.Start,
+                                verticalArrangement = Arrangement.Top
+                            ) {
+                                Text(
+                                    text = item.name,
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(top = 20.dp, start = 20.dp)
+                                )
+                                Text(
+                                    text = "Received On : ${item.receivedOn}",
+                                    fontWeight = FontWeight.Medium,
+                                    modifier = Modifier.padding(
+                                        top = 10.dp,
+                                        start = 20.dp,
+                                        bottom = 20.dp
+                                    )
+                                )
+                            }
                             Image(
-                                painter = painterResource(id = R.drawable.baseline_check_circle_24),
+                                painter = rememberAsyncImagePainter(it.image),
                                 contentDescription = "",
                                 modifier = Modifier
-                                    .width(50.dp)
-                                    .height(50.dp)
-                                    .padding(start = 20.dp)
-
+                                    .width(120.dp)
+                                    .height(120.dp)
+                                    .padding(bottom = 30.dp)
                             )
-
-                            R.string.update_lab_reports.Text(
-
-                                style = TextStyle(
-                                    Color.White,
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.Medium
-                                ),
-                                modifier = Modifier.padding(start = 20.dp, top = 13.dp)
+                        }
+                        Divider(
+                            thickness = 1.dp,
+                            color = Color.Black,
+                            modifier = Modifier.padding(bottom = 20.dp)
+                        )
+                        OutlinedCard(
+                            modifier = Modifier
+                                .fillMaxWidth(1f)
+                                .height(70.dp)
+                                .padding(start = 20.dp, bottom = 20.dp, end = 20.dp),
+                            shape = RoundedCornerShape(5.dp),
+                            colors = CardDefaults.outlinedCardColors(
+                                containerColor = Color.Green
+                            ),
+                            border = BorderStroke(1.dp, color = Color.LightGray),
+                            elevation = CardDefaults.outlinedCardElevation(
+                                defaultElevation = 10.dp
                             )
+                        ) {
+                            Row(
+                                modifier = Modifier
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.baseline_check_circle_24),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .width(50.dp)
+                                        .height(50.dp)
+                                        .padding(start = 20.dp)
+
+                                )
+
+                                R.string.update_lab_reports.Text(
+
+                                    style = TextStyle(
+                                        Color.White,
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Medium
+                                    ),
+                                    modifier = Modifier.padding(start = 20.dp, top = 13.dp)
+                                )
+                            }
                         }
                     }
                 }

@@ -2,8 +2,10 @@ package com.jaya.app.labreports.data.repoimpl
 
 import android.util.Log
 import com.jaya.app.labreports.core.common.sealed.Response
+import com.jaya.app.labreports.core.domain.entities.Materials
 import com.jaya.app.labreports.core.domain.repositories.UpdateRepository
 import com.jaya.app.labreports.core.model.LabQuotationsResponse
+import com.jaya.app.labreports.core.model.MaterialDetailResponse
 import com.jaya.app.labreports.core.utilities.AppPreference
 import com.jaya.app.labreports.data.source.remote.MyQuotesApi
 import com.jaya.app.labreports.data.source.remote.UpdateProductsApi
@@ -33,6 +35,23 @@ class UpdateRepositoryImpl @Inject constructor(
                 .getItemDetails(url,id)
             Response.Success(result)
         } catch (ex: Exception) {
+            Response.Error(message = ex.message)
+        } finally {
+            Response.Loading<LabQuotationsResponse>(state = false)
+        }
+    }
+
+    override suspend fun getMaterials(): Response<MaterialDetailResponse> {
+        return try{
+            Response.Loading<MaterialDetailResponse>(state = true)
+            val baseUrl = preference.baseUrl()
+            val url = "e6bb9fee10e7ce9b8ab6"
+            Log.d("MaterialsApiURL", "getMaterials: $url")
+            val result = httpClient
+                .create(UpdateProductsApi::class.java)
+                .getMaterialDetails(url)
+            Response.Success(result)
+        }catch (ex: Exception){
             Response.Error(message = ex.message)
         } finally {
             Response.Loading<LabQuotationsResponse>(state = false)

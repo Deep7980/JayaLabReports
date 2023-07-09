@@ -19,6 +19,7 @@ enum class EntryType {
     REMOVE_QUOTATION,
     QUOTATIONS,
     CREDS_ERROR,
+    MATERIALS,
     NUMBER_ERROR,
     QUOTATION_UPDATE,
     ORDERS,

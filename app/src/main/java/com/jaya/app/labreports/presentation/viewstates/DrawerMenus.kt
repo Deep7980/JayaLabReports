@@ -10,10 +10,10 @@ enum class DrawerMenus(
     @DrawableRes val mIcon: Int,
     val mDestination: Destination
 ) {
-    AvailableQuotes(
-        mName = R.string.available_quote,
-        mIcon = R.drawable.user,
-        mDestination = Destination.AvailableQuote
-    ),
+//    AvailableQuotes(
+//        mName = R.string.available_quote,
+//        mIcon = R.drawable.user,
+//        mDestination = Destination.AvailableQuote
+//    ),
     Logout(R.string.logout, R.drawable.logo, Destination.NONE)
 }

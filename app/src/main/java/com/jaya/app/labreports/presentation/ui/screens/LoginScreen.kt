@@ -46,6 +46,7 @@ import com.jaya.app.labreports.presentation.ui.navigation.Destination
 import com.jaya.app.labreports.presentation.ui.theme.PrimaryVariant
 import com.jaya.app.labreports.presentation.viewModels.LoginViewModel
 import com.jaya.app.labreports.presentation.viewstates.SavableMutableState
+import com.jaya.app.labreports.utilities.BackPressHandler
 import com.jaya.app.labreports.utilities.Image
 import com.jaya.app.labreports.utilities.OnEffect
 import com.jaya.app.labreports.utilities.Text
@@ -75,6 +76,7 @@ fun LoginScreen(viewModel: LoginViewModel) {
     val snackbarHostState = remember {
         SnackbarHostState()
     }
+    //BackPressHandler(onBackPressed = {viewModel.onBackDialog()})
 
     Scaffold(
         modifier = Modifier

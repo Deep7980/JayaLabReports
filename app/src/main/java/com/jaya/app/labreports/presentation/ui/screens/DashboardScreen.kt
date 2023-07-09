@@ -45,8 +45,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.Navigation
@@ -66,6 +69,7 @@ import com.jaya.app.labreports.presentation.viewModels.DashBoardViewModel
 import com.jaya.app.labreports.presentation.viewModels.MainViewModel
 import com.jaya.app.labreports.presentation.viewstates.DrawerMenuItem
 import com.jaya.app.labreports.presentation.viewstates.DrawerMenus
+import com.jaya.app.labreports.utilities.BackPressHandler
 import com.jaya.app.labreports.utilities.Image
 import com.jaya.app.labreports.utilities.Text
 import com.jaya.app.labreports.utilities.screenWidth
@@ -94,12 +98,15 @@ fun DashboardScreen(viewModel: DashBoardViewModel) {
     val dashboardDrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val uiScope = rememberCoroutineScope()
 
+    BackPressHandler(onBackPressed = {viewModel.onBackDialog()})
+
     ModalNavigationDrawer(
         drawerContent = {
             DashboardDrawerSection(
                 drawerMenus = viewModel.drawerMenus.collectAsState(),
                 vendorDetails = viewModel.vendorDetails.collectAsState(),
                 onSelect = viewModel::onDrawerMenuClicked,
+                viewModel = viewModel,
                 closeDrawer = {
                     uiScope.launch {
                         when (dashboardDrawerState.currentValue) {
@@ -153,6 +160,7 @@ private fun DashboardDrawerSection(
     drawerMenus: State<List<DrawerMenuItem>>,
     vendorDetails: State<VendorCredentials?>,
     onSelect: (Int, DrawerMenuItem) -> Unit,
+    viewModel: DashBoardViewModel,
     closeDrawer: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -168,21 +176,42 @@ private fun DashboardDrawerSection(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            when (vendorDetails.value != null) {
-                true -> {
-                    vendorDetails.value?.apply {
-
-                    }
-                }
-
-                false -> {
-                    R.drawable.logo.Image()
-                    R.string.app_name_new.Text(
-                        style = MaterialTheme.typography.h4.copy(
-                            color = Color.White, fontWeight = FontWeight.Bold
-                        )
-                    )
-                }
+//            when (vendorDetails.value != null) {
+//                true -> {
+//                    vendorDetails.value?.apply {
+//
+//                    }
+//                }
+//
+//                false -> {
+//                    R.drawable.logo.Image()
+//                    R.string.app_name_new.Text(
+//                        style = MaterialTheme.typography.h4.copy(
+//                            color = Color.White, fontWeight = FontWeight.Bold
+//                        )
+//                    )
+//                }
+//            }
+            R.drawable.logo.Image()
+            viewModel.vendorDetails.collectAsState().value?.let {
+                Text(
+                    text = it.name,
+                    textAlign = TextAlign.Center,
+                    fontStyle = FontStyle.Normal,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 20.sp,
+                    modifier = Modifier.padding(top = 10.dp, bottom = 5.dp)
+                )
+            }
+            viewModel.vendorDetails.collectAsState().value?.let {
+                Text(
+                    text = it.companyName,
+                    textAlign = TextAlign.Center,
+                    fontStyle = FontStyle.Normal,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 17.sp,
+                    modifier = Modifier.padding(bottom = 10.dp)
+                )
             }
         }
         Divider(color = Color.White)
