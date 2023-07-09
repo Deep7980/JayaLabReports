@@ -53,7 +53,7 @@ class SplashUseCases @Inject constructor(
             emit(
                 DataEntry(
                     EntryType.NAVIGATE, Navigation(
-                        destination = Page.LOGIN,
+                        destination = Page.UPDATE,
                         popDestination = Page.SPLASH,
                         popUpto = true
                     )

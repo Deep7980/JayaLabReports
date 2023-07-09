@@ -249,44 +249,71 @@ fun PreviewItem(viewModel: UpdateViewModel){
 //    MaterialListDisplay(title = "Moisture", desc = "% by Mass, Max", value = "0.0")
 
     Column(modifier = Modifier.verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
-        viewModel.materialList.collectAsState().value.forEach{item->
-            MaterialListDisplay(title = item,viewModel)
-
-        }
-
-    }
-
-}
-
-
-@Composable
-fun TopBarSection(navigateBack: () -> Unit,viewModel: UpdateViewModel) {
-    TopAppBar(
-        modifier = Modifier.fillMaxWidth(),
-        elevation = 10.dp,
-        contentPadding = PaddingValues(12.dp),
-    ) {
+//        viewModel.materialList.collectAsState().value.forEach{item->
+//            MaterialListDisplay(title = item,viewModel)
+//
+//        }
         Row(
-            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                painterResource(id = R.drawable.back),
-                contentDescription = null,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth(1f)
+        ){
+            Column(
                 modifier = Modifier
-                    .size(40.dp)
-                    .clickable {
-                        viewModel.NavigateBack()
+                    .padding(start = 20.dp, top = 10.dp, end = 10.dp, bottom = 5.dp)
+                    .fillMaxWidth()
+            ) {
+                viewModel.materialList.collectAsState().value.forEach { item ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        Text(text = item, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                        val initialVal = remember{mutableStateOf("13.0")}
+                        OutlinedTextField(
+                            value = initialVal.value,
+                            onValueChange = { text ->
+                                if (text.length <= 5)
+                                    initialVal.value = text
+                            },
+                            singleLine = true,
+                            placeholder = { ("0.00") },
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                focusedBorderColor = Color.Gray,
+                                unfocusedBorderColor = Color.Gray
+                            ),
+                            modifier = Modifier
+                                .width(80.dp)
+                                .height(50.dp)
+                                .padding(end = 10.dp),
+                            keyboardOptions = KeyboardOptions(
+                                imeAction = ImeAction.Done,
+                                keyboardType = KeyboardType.Number
+                            ),
+                        )
                     }
+                    Divider(thickness = 0.80.dp, color = Color.DarkGray, modifier = Modifier
+                        .padding(top = 10.dp, bottom = 10.dp)
+                        .fillMaxWidth())
+                }
 
-            )
-            Image(painter = painterResource(id = R.drawable.logo), contentDescription = null)
-            Image(painter = painterResource(id = R.drawable.bell), contentDescription = null)
+//            viewModel.materialDesc.collectAsState().value.forEach {desc->
+//                Text(text = desc, fontWeight = FontWeight.Light, fontSize = 16.sp)
+//            }
+
+            }
+
+
         }
 
+
     }
+
 }
+
+
+
 
 
 @Composable
@@ -329,4 +356,33 @@ fun MaterialListDisplay(title: String,viewModel: UpdateViewModel) {
         )
     }
     Divider(thickness = 0.50.dp, color = Color.DarkGray, modifier = Modifier.padding( top = 10.dp))
+}
+
+@Composable
+fun TopBarSection(navigateBack: () -> Unit,viewModel: UpdateViewModel) {
+    TopAppBar(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = 10.dp,
+        contentPadding = PaddingValues(12.dp),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painterResource(id = R.drawable.back),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clickable {
+                        viewModel.NavigateBack()
+                    }
+
+            )
+            Image(painter = painterResource(id = R.drawable.logo), contentDescription = null)
+            Image(painter = painterResource(id = R.drawable.bell), contentDescription = null)
+        }
+
+    }
 }
